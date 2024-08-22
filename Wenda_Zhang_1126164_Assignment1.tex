@@ -8,12 +8,30 @@
 \usepackage{tikz}
 \usepackage[plain]{algorithm}
 \usepackage{algpseudocode}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[noend]{algpseudocode}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{url}
 
 \usetikzlibrary{automata,positioning}
+
+% Define code block colour
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{outputbackground}{rgb}{0.12, 0.13, 0.16}
+\definecolor{outputtext}{rgb}{1, 1, 1} 
 
 %
 % Basic Document Settings
 %
+
 
 \topmargin=-0.45in
 \evensidemargin=0in
@@ -41,21 +59,21 @@
 %
 
 \newcommand{\enterProblemHeader}[1]{
-    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
-    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{}{Question \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Question \arabic{#1} (continued)}{Question \arabic{#1} continued on next page\ldots}\nobreak{}
 }
 
 \newcommand{\exitProblemHeader}[1]{
-    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Question \arabic{#1} (continued)}{Question \arabic{#1} continued on next page\ldots}\nobreak{}
     \stepcounter{#1}
-    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+    \nobreak\extramarks{Question \arabic{#1}}{}\nobreak{}
 }
 
 \setcounter{secnumdepth}{0}
 \newcounter{partCounter}
-\newcounter{homeworkProblemCounter}
-\setcounter{homeworkProblemCounter}{1}
-\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+\newcounter{questionCounter}
+\setcounter{questionCounter}{1}
+\nobreak\extramarks{Question \arabic{questionCounter}}{}\nobreak{}
 
 %
 % Homework Problem Environment
@@ -67,14 +85,38 @@
 %
 \newenvironment{homeworkProblem}[1][-1]{
     \ifnum#1>0
-        \setcounter{homeworkProblemCounter}{#1}
+        \setcounter{questionCounter}{#1}
     \fi
-    \section{Problem \arabic{homeworkProblemCounter}}
+    \section{Question \arabic{questionCounter}}
     \setcounter{partCounter}{1}
-    \enterProblemHeader{homeworkProblemCounter}
+    \enterProblemHeader{questionCounter}
 }{
-    \exitProblemHeader{homeworkProblemCounter}
+    \exitProblemHeader{questionCounter}
 }
+
+% Create Code block environment
+
+\lstset{frame=tb,
+    backgroundcolor=\color{backcolour},  
+    language=Java,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=left,                    
+    numbersep=5pt,  
+    numberstyle=\tiny\color{codegray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{codegreen},
+    stringstyle=\color{codepurple},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3,
+    mathescape,
+    texcl
+}
+
 
 %
 % Homework Details
@@ -86,11 +128,11 @@
 %   - Author
 %
 
-\newcommand{\hmwkTitle}{Homework\ \#2}
-\newcommand{\hmwkDueDate}{Sep 22, 2022}
-\newcommand{\hmwkClass}{Cryptography and Network Security COMP90043}
-\newcommand{\hmwkClassInstructor}{Professor  Udaya Parampalli}
-\newcommand{\hmwkAuthorName}{\textbf{Faxing Wang} \and \textbf{11301293}}
+\newcommand{\hmwkTitle}{Assignment 1 ##}
+\newcommand{\hmwkDueDate}{Aug 23, 2024}
+\newcommand{\hmwkClass}{COMP90043 Cryptography and Security}
+\newcommand{\hmwkClassInstructor}{Professor Udaya Parampalli}
+\newcommand{\hmwkAuthorName}{\textbf{Wenda Zhang} \and \textbf{1126164}}
 
 %
 % Title Page
@@ -99,7 +141,7 @@
 \title{
     \vspace{2in}
     \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
-    \normalsize\vspace{0.5in}{Due\ on\ \hmwkDueDate\ at 3:10pm}\\
+    \normalsize\vspace{0.5in}{Due\ on\ \hmwkDueDate\ at 23:59pm}\\
     \vspace{0.1in}\large{\textit{\hmwkClassInstructor\ }}
     \vspace{3in}
 }
@@ -141,228 +183,1126 @@
 \pagebreak
 
 \begin{homeworkProblem}
-    Give an appropriate positive constant \(c\) such that \(f(n) \leq c \cdot
-    g(n)\) for all \(n > 1\).
 
-    \begin{enumerate}
-        \item \(f(n) = n^2 + n + 1\), \(g(n) = 2n^3\)
-        \item \(f(n) = n\sqrt{n} + n^2\), \(g(n) = n^2\)
-        \item \(f(n) = n^2 - n + 1\), \(g(n) = n^2 / 2\)
-    \end{enumerate}
+    \textbf{Solution For Question 1}\\
 
-    \textbf{Solution}
-
-    We solve each solution algebraically to determine a possible constant
-    \(c\).
-    \\
-
-    \textbf{Part One}
+    \textbf{(a) One-time pad perfect security proof} \\ [10pt]
+    A cryptosystem is perfectly secret if
+    \[
+        \begin{split}
+            Pr(P=p|C=c) = Pr(P=p)
+        \end{split}
+    \]
+    for all possible plaintexts $p$ and all possible ciphertexts $c$.\\
+    Express $Pr(P=p|C=c) = Pr(P=p)$ using Bayes's theorem, we get
 
     \[
         \begin{split}
-            n^2 + n + 1 &=
-            \\
-            &\leq n^2 + n^2 + n^2
-            \\
-            &= 3n^2
-            \\
-            &\leq c \cdot 2n^3
+            Pr(P=p|C=c) &= \frac{Pr(C=c|P=p) \cdot Pr(P=p)}{Pr(C=c)}
+        \end{split}
+    \]
+    Recall that for a uniformly distributed key $k$:
+    
+    \[
+        \begin{split}
+            Pr(C=c|P=p) &= Pr(Enc(k,p) = c) = Pr(k = p \oplus c) \\
+                        &= \frac{1}{2^n} \\[5pt]
+                Pr(C=c) &= \sum\nolimits_{p \in \{0,1\}^n} Pr(C=c|P=p)Pr(P=p) \\
+                        &= \frac{1}{2^n}
         \end{split}
     \]
 
-    Thus a valid \(c\) could be when \(c = 2\).
-    \\
+    Further, we can use the $Pr(C=c|P=p) = \frac{1}{2^n}$ and $Pr(C=c) = \frac{1}{2^n}$ to simplify the Bayes's expression above, get the proof: $Pr(P=p|C=c) = Pr(P=p)$. \\[15pt]
+    
+    \textbf{(b) Two-time pad key reuse problems} \\ [10pt]
+    Yes, the plaintexts are "hello" and "world". \\
+    
+    Due to:
+    
+    \[
+        \begin{split}
+            C_1 &= P_1 \oplus K \\
+            C_2 &= P_2 \oplus K \\
+            C_1 \oplus C_2 &= P_1 \oplus K \oplus P_2 \oplus K \\
+                        &= P_1 \oplus P_2
+        \end{split}
+    \]
 
-    \textbf{Part Two}
+    Hence:
 
     \[
         \begin{split}
-            n^2 + n\sqrt{n} &=
-            \\
-            &= n^2 + n^{3/2}
-            \\
-            &\leq n^2 + n^{4/2}
-            \\
-            &= n^2 + n^2
-            \\
-            &= 2n^2
-            \\
-            &\leq c \cdot n^2
+            P_2 &= C_1 \oplus C_2 \oplus P_1
         \end{split}
     \]
 
-    Thus a valid \(c\) is \(c = 2\).
-    \\
+    Here are the Python code to get the plaintexts:
 
-    \textbf{Part Three}
+    \begin{lstlisting}
+    # XOR Calculation
+        
+    c1 = "0001100000010111000001010000000100001010"
+    c2 = "0000011100011101000110110000000100000001"
+        
+    XOR = ''.join(str(int(i) ^ int(j)) for i, j in zip(c1,c2))
+        
+    print(XOR)
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    0001111100001010000111100000000000001011
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    # Convert text to its ASCII binary representation
+        
+    def binary_conversion(text):
+        binary_rep = ''.join(format(ord(i), '08b') for i in text)
+        return binary_rep
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    # Convert text to the binary representation of its ASCII values
+        
+    string_1 = binary_conversion("value")
+        
+    string_2 = binary_conversion("hello")
+        
+    print(f"String value's binary representation are: {string_1}")
+    print(f"String hello's binary representation are: {string_2}")
+    \end{lstlisting}
+    
+    Output:
+    \begin{lstlisting}
+    String values binary representation are: 0111011001100001011011000111010101100101.
+        
+    String hellos binary representation are: 0110100001100101011011000110110001101111
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    # Using the two strings to calculate the C1 and C2s XOR value
+        
+    value_XOR = ''.join(str(int(i) ^ int(j)) for i, j in zip(XOR, string_1))
+        
+    hello_XOR = ''.join(str(int(i) ^ int(j)) for i, j in zip(XOR, string_2))
+        
+    print(f"XOR value of C1,C2 and string value: {value_XOR}")
+    print(f"XOR value of C1,C2 and string hello: {hello_XOR}")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    XOR value of C1,C2 and string value: 0110100101101011011100100111010101101110
+    XOR value of C1,C2 and string hello: 0111011101101111011100100110110001100100
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    # Convert the ASCII binary representation to text
+    
+    def text_conversion(binary):
+        text = ''.join(chr(int(binary[i:i+8], 2)) for i in range(0, len(binary), 8))
+        return text
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    print(f"Text value of XOR value of C1,C2 and string value: {text_conversion(value_XOR)}")
+    print(f"Text value of XOR value of C1,C2 and string hello: {text_conversion(hello_XOR)}")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    Text value of XOR value of C1,C2 and string value: ikrun
+    Text value of XOR value of C1,C2 and string hello: world
+    \end{lstlisting}
+
+    \textbf{Thus, the plaintexts are "hello" and "world".} \\[15pt]
+    
+    \textbf{(c) Consider using arithmetic operations in the OTP scheme} \\ [10pt]
+    \textbf{1.} Based on the encryption formula $c = pk \pmod{n}$ given in the problem, we can assume that $\mathbb{Z}_n^+$ operates under multiplication modulo $n$. Since $n$ is prime, every element in $\mathbb{Z}_n^+$ (which contains all integers from 1 to $n-1$) is coprime to $n$. Consequently, $\mathbb{Z}_n^+$ forms an Abelian group under multiplication modulo $n$. This indicates that each element $k$ in the group has a unique multiplicative inverse $k^{-1}$. \\
+
+    Leveraging this property, we can construct the corresponding decryption scheme:
+    
+    \[  
+        \begin{split}
+            \mathbf{p = c \cdot k^{-1} \bmod{n}}
+        \end{split}
+    \]
+    
+    This scheme is valid because:
+    
+    \[
+        \begin{split}
+            c &= pk \bmod n \\
+            c \cdot k^{-1} &= p \cdot k \cdot k^{-1} \bmod n \\
+            p &\equiv c \cdot k^{-1} \pmod{n} \\
+            p &= c \cdot k^{-1} \bmod{n}
+        \end{split}
+    \]
+    
+    Therefore, by computing $\mathbf{p = c \cdot k^{-1} \bmod n}$, we can recover the original plaintext $p$.\\
+
+    \textbf{2.} 
+    No, this encryption scheme is not perfectly secure. \\
+    
+    To achieve perfect security, we need to satisfy:
+    \[
+        \begin{split}
+            Pr(P=p|C=c) = Pr(P=p)
+        \end{split}
+    \]
+    However, when we use $c = pk \bmod n$ to encrypt the plaintext, some conditions will result in $c = 0$. For example, If $p = 0$, it will lead to $c = 0$, no matter the $k$. \\
+
+    Under this scenario, firstly, we will infer that our key is uniformly distributed and has $n-1$ cases. The probability that $k$ occurs is $\frac{1}{n-1}$. Further, the probability that $p$ occurs is also uniformly distributed and there are $n$ cases: $Pr(P=p) = \frac{1}{n}$. In the following section, the discussion will be divided into two cases.\\
+
+    For case 1, we will focus on the non-zero $p$ values. In this case, $p$ could be assumed to be $p \in \mathbb{Z}_n^+$. Since $\mathbb{Z}_n^+$ is an Abelian group as mentioned above and $p$ is coprime to $n$. This indicates that each element $p$ in the group has a unique multiplicative inverse $p^{-1}$ in $\frac{1}{n-1}$. \\
+
+    Leveraging this property, we can derive the equation for $k$:
+    
+    \[  
+        \begin{split}
+            k = c \cdot p^{-1} \bmod{n}
+        \end{split}
+    \]
+
+    Thus, for one $p$, only one corresponding $k$ will exist to lead $c = pk \bmod n$:
+
+    \[  
+        \begin{split}
+            Pr(C=c|P=p) = Pr(k = c \cdot p^{-1} \bmod n ) = \frac{1}{n-1}
+        \end{split}
+    \]
+
+    Next, we calculate:
 
     \[
         \begin{split}
-            n^2 - n + 1 &=
-            \\
-            &\leq n^2
-            \\
-            &\leq c \cdot n^2/2
+                Pr(C=c) = \sum\nolimits_{p \in \{0,1\}^n} Pr(C=c|P=p)Pr(P=p)
         \end{split}
     \]
 
-    Thus a valid \(c\) is \(c = 2\).
+    In case 1, we are discussing the non-zero $p$ values, so we only add up the probability of non-zero $p$:
 
+    \[
+        \begin{split}
+                Pr(C=c) = \frac{1}{n-1} \cdot \frac{n-1}{n} = \frac{1}{n} 
+        \end{split}
+    \]
+
+    For case 2, we focus on the zero $p$ values. In this situation, $p$ will cause $c = 0$ regardless of $k$.\\
+
+    This demonstrates that with $p = 0$ and $c =0$, $k$ could be any values, hence:
+
+    \[
+        \begin{split}
+                Pr(C=0 | P=0) = 1 
+        \end{split}
+    \]
+
+    and each possible $p$ occurs with equal probability, thus:
+
+    \[
+        \begin{split}
+                Pr(p=0) =  \frac{1}{n}
+        \end{split}
+    \]
+
+    Further, we calculate $Pr(C=0)$. Since $c = 0$ only happens when $c =0$, only one possibility will be considered:
+    
+    \[
+        \begin{split}
+                Pr(C=0) &= Pr(C=0|P=0) \cdot Pr(P=0) \\
+                        &=  1 \cdot \frac{1}{n} \\
+                        &= \frac{1}{n}
+        \end{split}
+    \]
+
+    According to Bayes's theorem, and the assumption that $p$ occurs is uniformly distributed ($Pr(P=p) = \frac{1}{n}$).\\
+
+    We will discover that when we learn that $c = 0$, the probability of observing $p = 0$ is:
+
+    \[
+        \begin{split}
+                Pr(P=0|C=0) &= \frac{Pr(C=0|P=0) \cdot Pr(P=p)}{Pr(C=0)} \\
+                            &= \frac{1 \cdot Pr(P=p)}{\frac{1}{n}} \\
+                            &= \frac{1}{n} \cdot n \\
+                            &= 1
+        \end{split}
+    \]
+
+    In another case, we will discover that when we learn that $c \neq 0$, the probability of observing is:
+
+    \[
+        \begin{split}
+                Pr(P=p|C \neq 0) &= \frac{Pr(C \neq 0|P=p) \cdot Pr(P=p)}{Pr(C\neq 0)} \\
+                                 &= \frac{\frac{1}{n-1} \cdot Pr(P=p)}{\frac{1}{n}} \\
+                                 &= \frac {\frac{1}{n-1} \cdot \frac{1}{n}}{\frac{1}{n}} \\
+                                 &= \frac{1}{n-1}
+        \end{split}
+    \]
+
+    In conclusion, this encryption scheme is not perfectly secure due to two key observations: \\
+    
+    1. When $c = 0$: \\
+    $Pr(P=0|C=0) = 1 > Pr(P=p) = \frac{1}{n}$ \\
+    This shows that if an attacker observes a ciphertext of 0, they can be certain that the plaintext is also 0, which is a clear information leak. \\
+    
+    2. When $c \neq 0$: \\
+    For any $p \neq 0$, $Pr(P=p|C \neq 0) = \frac{1}{n-1} > Pr(P=p) = \frac{1}{n}$ \\
+    This indicates that for non-zero ciphertexts, the probability of each non-zero plaintext increases, providing additional information to the attacker.\\
+    
+    In both cases, the conditional probabilities differ from the prior probabilities, violating the definition of perfect secrecy: Pr(P=p|C=c) should equal Pr(P=p) for all p and c. This discrepancy allows an attacker to gain information about the plaintext from the ciphertext, compromising the perfect security. \textbf{Thus, this encryption scheme is not perfectly secure.} \\[15pt]
+
+    \textbf{(d) Identify the vulnerability of the encryption scheme and recover the plaintext} \\ [10pt]
+    
+    The primary vulnerability of this encryption scheme is that using a key shorter than the plaintext leads to partial encryption and exposes a significant portion of the message in plaintext. \\
+    
+    The recovered plaintext is Kennedy's famous quote: "Ask not what your country can do for you - ask what you can do for your country" and the key is "congratulations you found me". \\
+    
+    From the 1. (a), we learn that $c = p \oplus k$. Due to the ciphertext is the hexadecimal digits and we are using ASCII encoding, hence: 
+
+    \begin{lstlisting}
+    ciphertext = "221C05471C0E00551B09151D4F171C550B4F164F1301011C1D000E046E20646F20666F7220796F752C2061736
+          B207768617420796F752063616E20646F20666F7220796F757220636F756E7472792E204A464B"
+    
+    ciphertext_length = len(ciphertext)
+    
+    # The actual number of ASCII characters in the ciphertext, since each character is represented by 2 hex digits
+    actual_character_length = len(ciphertext)/2
+    
+    print(f"The length of the ciphertext is: {ciphertext_length}")
+    print(f"The actual number of ASCII characters is: {int(actual_character_length)}")
+    \end{lstlisting}
+
+    Output:
+
+    \begin{lstlisting}
+    The length of the ciphertext is: 166
+    The actual number of ASCII characters is: 83
+    \end{lstlisting}
+
+    Furthermore, from the length of $\lvert k \rvert = 28$, we know that the key could only encrypt 28 characters, which \textbf{shows that our key is not the same length as the plaintext and that the ciphertext could reveal some of the characteristics of the plaintext.} \\
+    
+    Checking if any information is exposed in the ciphertext, converting the ciphertext to the characters:
+    
+    \begin{lstlisting}
+    # Convert the ciphertext to its ASCII representation
+    ciphertext_bytes = bytes.fromhex(ciphertext)
+    print(ciphertext_bytes)
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    b'"\x1c\x05G\x1c\x0e\x00U\x1b\t\x15\x1dO\x17\x1cU\x0bO\x16O\x13\x01\x01\x1c\x1d\x00\x0e\x04n do for you, ask what you can do for your country. JFK'
+    \end{lstlisting}
+
+    We discovered some information from the output: "n do for you, ask what you can do for your country. JFK". Moreover, by hints and searching, we found that the information came from Kennedy's speech. The full version is "Ask not what your country can do for you - ask what you can do for your country". Next, with the information above, we can guess the cipher came from Kennedy's speech and further XOR 28 characters of plaintext and ciphertext to find the key:
+
+    \begin{lstlisting}
+    # Due to the length of k is 28 and the actual number of ASCII characters of the ciphertext is 56
+    key_length_cipher = ciphertext[0:56]
+    key_length_cipher = bin(int(key_length_cipher, 16))[2:].zfill(len(key_length_cipher)*4)
+    
+    # Guessing the plaintext
+    plaintext = "Ask not what your country can do for you - ask what you can do for your country"
+    plaintext_key = plaintext[0:28]
+    plaintext_key = binary_conversion(plaintext_key)
+    
+    result = ''.join(str(int(i) ^ int(j)) for i, j in zip(key_length_cipher, plaintext_key))
+    print(f"The binary representation of key is: {result}")
+    print(f"The key is: {text_conversion(result)}")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    The binary representation of key is: 011000110110111101101110011001110111001001100001011101000
+    1110101011011000110000101110100011010010110111101101110011100110010000001111001011011110111010
+    1001000000110011001101111011101010110111001100100001000000110110101100101
+    The key is: congratulations you found me
+    \end{lstlisting}
+
+    In summary, the recovered plaintext is Kennedy's famous quote: \textbf{"Ask not what your country can do for you - ask what you can do for your country"} and the key is \textbf{"congratulations you found me"}. In addition, the investigation identified the primary vulnerability of this encryption scheme, which is that \textbf{it uses a key that is shorter than the plaintext, resulting in partial encryption that exposes a significant portion of the message in plaintext, making it susceptible to known plaintext attacks} and compromising the overall security of the system.
+    
 \end{homeworkProblem}
 
 \pagebreak
 
 \begin{homeworkProblem}
-    Let \(\Sigma = \{0, 1\}\). Construct a DFA \(A\) that recognizes the
-    language that consists of all binary numbers that can be divided by 5.
-    \\
 
-    Let the state \(q_k\) indicate the remainder of \(k\) divided by 5. For
-    example, the remainder of 2 would correlate to state \(q_2\) because \(7
-    \mod 5 = 2\).
+    \textbf{Solution For Question 2}\\
 
-    \begin{figure}[htp]
-        \centering
-        \begin{tikzpicture}[shorten >=1pt,node distance=2cm,on grid,auto]
-            \node[state, accepting, initial] (q_0)   {$q_0$};
-            \node[state] (q_1) [right=of q_0] {$q_1$};
-            \node[state] (q_2) [right=of q_1] {$q_2$};
-            \node[state] (q_3) [right=of q_2] {$q_3$};
-            \node[state] (q_4) [right=of q_3] {$q_4$};
-            \path[->]
-                (q_0)
-                    edge [loop above] node {0} (q_0)
-                    edge node {1} (q_1)
-                (q_1)
-                    edge node {0} (q_2)
-                    edge [bend right=-30] node {1} (q_3)
-                (q_2)
-                    edge [bend left] node {1} (q_0)
-                    edge [bend right=-30] node {0} (q_4)
-                (q_3)
-                    edge node {1} (q_2)
-                    edge [bend left] node {0} (q_1)
-                (q_4)
-                    edge node {0} (q_3)
-                    edge [loop below] node {1} (q_4);
-        \end{tikzpicture}
-        \caption{DFA, \(A\), this is really beautiful, ya know?}
-        \label{fig:multiple5}
-    \end{figure}
+    \textbf{2. Cryptanalysis on Monoalphabetic Cipher} \\ [10pt]
+    The question 2 is solved based on the “Cryptanalysis Hints” provided by The University of Notre Dame (n.d.):
 
-    \textbf{Justification}
-    \\
-
-    Take a given binary number, \(x\). Since there are only two inputs to our
-    state machine, \(x\) can either become \(x0\) or \(x1\). When a 0 comes
-    into the state machine, it is the same as taking the binary number and
-    multiplying it by two. When a 1 comes into the machine, it is the same as
-    multipying by two and adding one.
-    \\
-
-    Using this knowledge, we can construct a transition table that tell us
-    where to go:
-
-    \begin{table}[ht]
-        \centering
-        \begin{tabular}{c || c | c | c | c | c}
-            & \(x \mod 5 = 0\)
-            & \(x \mod 5 = 1\)
-            & \(x \mod 5 = 2\)
-            & \(x \mod 5 = 3\)
-            & \(x \mod 5 = 4\)
-            \\
-            \hline
-            \(x0\) & 0 & 2 & 4 & 1 & 3 \\
-            \(x1\) & 1 & 3 & 0 & 2 & 4 \\
-        \end{tabular}
+    \begin{table}[htbp]
+    \label{tab:english_freq}
+    \centering
+    \small
+    \begin{tabularx}{\textwidth}{|l|X|}
+    \hline
+    \multicolumn{2}{|l|}{\textit{Note:} Data sourced from "Cryptanalysis Hints" by The University of Notre Dame \cite{notre_dame_crypto}} \\
+    \hline
+    \textbf{Category} & \textbf{Content} \\
+    \hline
+    Order Of Frequency Of Single Letters & E T A O I N S H R D L U \\
+    \hline
+    Order Of Frequency Of Digraphs & th er on an re he in ed nd ha at en es of or nt ea ti to it st io le is ou ar as de rt ve \\
+    \hline
+    Order Of Frequency Of Trigraphs & the and tha ent ion tio for nde has nce edt tis oft sth men \\
+    \hline
+    Order Of Frequency Of Most Common Doubles & ss ee tt ff ll mm oo \\
+    \hline
+    Order Of Frequency Of Initial Letters & T O A W B C D S F M R H I Y E G L N P U J K \\
+    \hline
+    Order Of Frequency Of Final Letters & E S T D N R Y F L O G H A K M P U W \\
+    \hline
+    One-Letter Words & a, I. \\
+    \hline
+    Most Frequent Two-Letter Words & of, to, in, it, is, be, as, at, so, we, he, by, or, on, do, if, me, my, up, an, go, no, us, am \\
+    \hline
+    Most Frequent Three-Letter Words & the, and, for, are, but, not, you, all, any, can, had, her, was, one, our, out, day, get, has, him, his, how, man, new, now, old, see, two, way, who, boy, did, its, let, put, say, she, too, use \\
+    \hline
+    Most Frequent Four-Letter Words & that, with, have, this, will, your, from, they, know, want, been, good, much, some, time \\
+    \hline
+    \end{tabularx}
+    \caption{English Language Frequency Statistics Table}
     \end{table}
 
-    Therefore on state \(q_0\) or (\(x \mod 5 = 0\)), a transition line should
-    go to state \(q_0\) for the input 0 and a line should go to state \(q_1\)
-    for input 1. Continuing this gives us the Figure~\ref{fig:multiple5}.
-\end{homeworkProblem}
+    Firstly, we count the frequency of each letter in the ciphertext to gain the insights of the ciphertext.
 
-\begin{homeworkProblem}
-    Write part of \alg{Quick-Sort($list, start, end$)}
+    \begin{lstlisting}
+    from collections import Counter, defaultdict
+    import string
+    import textwrap
 
-    \begin{algorithm}[htp]
-        \begin{algorithmic}[1]
-            \Function{Quick-Sort}{$list, start, end$}
-                \If{$start \geq end$}
-                    \State{} \Return{}
-                \EndIf{}
-                \State{} $mid \gets \Call{Partition}{list, start, end}$
-                \State{} \Call{Quick-Sort}{$list, start, mid - 1$}
-                \State{} \Call{Quick-Sort}{$list, mid + 1, end$}
-            \EndFunction{}
-        \end{algorithmic}
-        \caption{Start of QuickSort}
-    \end{algorithm}
+    ciphertext = "tf uzg lbf z jorgftbl fdzf fdr cbeezlqra hof fb er. fdrarnbar fdrar uzg lb zlgura fb pr ezqr. fdtg ezl rmharggrq dtegrwn utfd hranrcf rzgr, utfdbof zls zccrlf. dtg grlfrlcrg urar urww foalrq, dtg ubaqg cwrza, zlq dtg nworlcs bn ghrrcd arezavzpwr. srf, t qtq lbf arcbkltgr tl dte z nrwwbu-cbolfasezl. dr cblftlorq fdr cblyragzftbl tl fdrgr fraeg: “sbo dzyr qbopfwrgg fdbokdf, gta, fdzf t dzyr qrwzsrq wblk tl hzstlk sbo fdtg grcblq ytgtf. fdr arzgbl tg fdzf, sboa tqrlftfs arcbkltgrq, t utgdrq fb urtkd ezfoarws udzf hzaf fb zcf fbuzaqg sbo. t dzyr drgtfzfrq eocd. ebgf zllbstlk ctacoegfzlcrg dzyr pabokdf sbo tlfb fdr hargrlcr bn z ezl udb dzg pabvrl zww fdr ftrg bn doezltfs. sbo dzyr cber fb fabopwr es rmtgfrlcr.” “oltlfrlftblzwws!” gztq t. “oltlfrlftblzwws?” arhwtrq fdr gfazlkra, aztgtlk dtg ybtcr z wtffwr; “uzg tf oltlfrlftblzwws fdzf fdr zpazdze wtlcbwl hoagorq er zww byra fdr grzg? uzg tf oltlfrlftblzwws fdzf sbo fbbv hzggzkr tl fdtg natkzfr? uzg tf oltlfrlftblzwws fdzf sboa czllbl pzwwg arpbolqrq bnn fdr hwzftlk bn es yrggrw? uzg tf oltlfrlftblzwws fdzf ea. lrq wzlq gfaocv er utfd dtg dzahbbl?” t qrfrcfrq z argfaztlrq taatfzftbl tl fdrgr ubaqg. pof fb fdrgr arcatetlzftblg t dzq z yras lzfoazw zlgura fb ezvr zlq t ezqr tf. “gta,” gztq t, “lb qbopf sbo zar tklbazlf bn fdr qtgcoggtblg udtcd dzyr fzvrl hwzcr cblcraltlk sbo tl zeratcz zlq roabhr. sbo qb lbf vlbu fdzf qtyrag zcctqrlfg, czogrq ps cbwwtgtblg utfd sboa gopezatlr ezcdtlr, dzyr rmctfrq hopwtc nrrwtlk tl fdr fub cblftlrlfg. t betf fdr dshbfdrgrg utfdbof loepra ps udtcd tf uzg gbokdf fb rmhwztl fdr tlrmhwtczpwr hdrlberlbl bn udtcd sbo zwblr hbggrgg fdr grcarf. pof sbo eogf olqragfzlq fdzf, tl hoagotlk sbo byra fdr dtkd grzg bn fdr hzctntc, fdr zpazdze wtlcbwl prwtryrq tfgrwn fb pr cdzgtlk gber hburanow grz-eblgfra, bn udtcd tf uzg lrcrggzas fb atq fdr bcrzl zf zls hatcr.” z dzwn-getwr coawrq fdr wthg bn fdr cbeezlqra: fdrl, tl z czwera fblr— “e. zabllzm,” dr arhwtrq, “qzar sbo znntae fdzf sboa natkzfr ubowq lbf zg gbbl dzyr hoagorq zlq czllblzqrq z gopezatlr pbzf zg z eblgfra?” fdtg jorgftbl repzaazggrq er, nba crafztlws czhfztl nzaazkof etkdf lbf dzyr drgtfzfrq. dr etkdf dzyr fdbokdf tf dtg qofs fb qrgfabs z cblfatyzlcr bn fdtg vtlq, zg dr ubowq z ktkzlftc lzaudzw. “sbo olqragfzlq fdrl, gta,” cblftlorq fdr gfazlkra, “fdzf t dzyr fdr atkdf fb farzf sbo zg rlretrg?” t zlgurarq lbfdtlk, hoahbgrws. nba udzf kbbq ubowq tf pr fb qtgcogg gocd z habhbgtftbl, udrl nbacr cbowq qrgfabs fdr prgf zakoerlfg? “t dzyr drgtfzfrq gber fter,” cblftlorq fdr cbeezlqra; “lbfdtlk bpwtkrq er fb gdbu sbo dbghtfzwtfs. tn t cdbgr fb grhzazfr esgrwn nabe sbo, t gdbowq dzyr lb tlfrargf tl grrtlk sbo zkztl; t cbowq hwzcr sbo ohbl fdr qrcv bn fdtg yrggrw udtcd dzg grayrq sbo zg z arnokr, t cbowq gtlv prlrzfd fdr uzfrag, zlq"
+
+    # English letter frequency
+    english_letter_frequency = "etaoinshrdlcumwfgypbvkjxqz"
+    
+    # Count the frequency of each letter in the ciphertext
+    ciphertext_noise_removal = ciphertext.replace(" ", "").replace("-","").replace(".","").replace(",","").replace(";", "").replace(":", "").replace("?", "").replace("!", "").replace("—", "").replace("'", "").replace("“", "").replace("”", "").replace("(", "").replace(")", "").replace("'", "")
+    
+    # Count the frequency of each letter in the ciphertext
+    ciphertext_letter_counts = Counter(ciphertext_noise_removal)
+    
+    # Sort the letters by frequency
+    ciphertext_letter_frequency = ''.join([i[0] for i in ciphertext_letter_counts.most_common()])
+    
+    ciphertext_letter_frequency
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    'rfztlbgdaoqcwesukhnpyvmj'
+    \end{lstlisting}
+
+    The code output shows the frequency of letters in the ciphertext. \\
+
+    Next, we classify the ciphertext words by length to further identify patterns and common word structures.
+
+    \begin{lstlisting}
+    ciphertext_words = ciphertext.split()
+
+    classified_words = defaultdict(list)
+    for word in ciphertext_words:
+        if word not in classified_words[len(word)]:
+            classified_words[len(word)].append(word)
+    
+    for key, words in sorted(classified_words.items()):
+        print(f"{key}-Letter Words: {words}")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    1-Letter Words: ['z', 't']
+    2-Letter Words: ['tf', 'fb', 'lb', 'pr', 'bn', 'tl', 'dr', 'tg', 'es', 't.', 'er', 't,', 'qb', 'ps', 'zf', 'zg', '“t', 'tn']
+    3-Letter Words: ['uzg', 'lbf', 'fdr', 'hof', 'er.', 'ezl', 'zls', 'dtg', 'zlq', 'qtq', 'dte', 'sbo', 'zcf', 'udb', 'dzg', 'zww', 'bnn', 'ea.', 'lrq', 'pof', 'dzq', 'tf.', '“lb', 'zar', 'fub', 'atq', '“e.', 'er,', 'nba']
+    4-Letter Words: ['fdzf', 'fdtg', 'utfd', 'urar', 'urww', 'srf,', '“sbo', 'dzyr', 'gta,', 'wblk', 'sboa', 'udzf', 'hzaf', 'sbo.', 'ebgf', 'tlfb', 'ftrg', 'cber', 'gztq', '“uzg', 'byra', 'fbbv', 'wzlq', 'yras', 'ezvr', 'ezqr', 'vlbu', 'betf', 'eogf', 'dtkd', 'grzg', 'gber', 'wthg', 'gbbl', 'pbzf', 'qofs', 'kbbq', 'gocd', 'udrl', 'prgf', 'gdbu', 'nabe', 'sbo,', 'ohbl', 'qrcv', 'gtlv']
+    5-Letter Words: ['fdrar', 'ezqr.', 'rzgr,', 'ubaqg', 'fdrgr', 'fdzf,', 'urtkd', 'eocd.', 'ybtcr', 'grzg?', 'pzwwg', 'qbopf', 'udtcd', 'fzvrl', 'hwzcr', 'zwblr', 'bcrzl', 'fdrl,', 'fblr—', '“qzar', 'ubowq', 'etkdf', 'vtlq,', 'gta,”', '“fdzf', 'atkdf', 'farzf', 'nbacr', 'cbowq', 'cdbgr']
+    6-Letter Words: ['zlgura', 'cwrza,', 'ghrrcd', 'fraeg:', 'hzstlk', 'grcblq', 'ytgtf.', 'arzgbl', 'utgdrq', 'pabvrl', 'czllbl', 'gfaocv', 'ubaqg.', '“gta,”', 'qtyrag', 'czogrq', 'hopwtc', 'loepra', 'gbokdf', 'tfgrwn', 'coawrq', 'czwera', 'znntae', 'fter,”', 'esgrwn', 'gdbowq', 'grrtlk', 'zkztl;', 'yrggrw', 'grayrq']
+    7-Letter Words: ['dtegrwn', 'hranrcf', 'utfdbof', 'zccrlf.', 'foalrq,', 'nworlcs', 'qrwzsrq', 'fbuzaqg', 'pabokdf', 'fabopwr', 'arhwtrq', 'aztgtlk', 'wtffwr;', 'zpazdze', 'wtlcbwl', 'hoagorq', 'hzggzkr', 'hwzftlk', 'yrggrw?', 'lzfoazw', 'zeratcz', 'roabhr.', 'rmctfrq', 'nrrwtlk', 'rmhwztl', 'hbggrgg', 'grcarf.', 'cdzgtlk', 'hatcr.”', 'natkzfr', 'czhfztl', 'fdbokdf', 'qrgfabs', 'qtgcogg', 'bpwtkrq', 'arnokr,', 'prlrzfd', 'uzfrag,']
+    8-Letter Words: ['jorgftbl', 'fdbokdf,', 'tqrlftfs', 'ezfoarws', 'zllbstlk', 'hargrlcr', 'natkzfr?', 'qrfrcfrq', 'tklbazlf', 'ezcdtlr,', 'hoagotlk', 'hzctntc,', 'prwtryrq', 'hburanow', 'arhwtrq,', 'nzaazkof', 'ktkzlftc', 'lzaudzw.', 'zlgurarq', 'lbfdtlk,', '“lbfdtlk', 'grhzazfr', 'tlfrargf']
+    9-Letter Words: ['cbeezlqra', 'fdrarnbar', 'rmharggrq', 'grlfrlcrg', 'arcbkltgr', 'cblftlorq', 'qbopfwrgg', 'drgtfzfrq', 'doezltfs.', 'gfazlkra,', 'arpbolqrq', 'dzahbbl?”', 'gopezatlr', 'lrcrggzas', 'zabllzm,”', 'eblgfra?”', 'crafztlws', 'rlretrg?”']
+    10-Letter Words: ['argfaztlrq', 'taatfzftbl', 'cblcraltlk', 'zcctqrlfg,', 'cbwwtgtblg', 'dshbfdrgrg', 'hdrlberlbl', 'olqragfzlq', 'dzwn-getwr', 'cbeezlqra:', 'czllblzqrq', 'drgtfzfrq.', 'hoahbgrws.', 'zakoerlfg?', 'cbeezlqra;']
+    11-Letter Words: ['arezavzpwr.', 'arcbkltgrq,', 'rmtgfrlcr.”', 'qtgcoggtblg', 'cblftlrlfg.', 'repzaazggrq', 'cblfatyzlcr']
+    12-Letter Words: ['cblyragzftbl', 'tlrmhwtczpwr', 'grz-eblgfra,', 'habhbgtftbl,', 'dbghtfzwtfs.']
+    13-Letter Words: ['ctacoegfzlcrg']
+    14-Letter Words: ['arcatetlzftblg']
+    15-Letter Words: ['oltlfrlftblzwws']
+    18-Letter Words: ['nrwwbu-cbolfasezl.', '“oltlfrlftblzwws!”', '“oltlfrlftblzwws?”']
+    \end{lstlisting}
+
+    The initial state of the encrypted words is displayed using a modified version of "decrypt.py", with all substitution letters set to "*":
+
+    \begin{lstlisting}
+    # The previous part is the same as the provided "decrypt.py"; the modifications start from below.
+    ## substitution text
+    pt = ""
+    for elm in text:
+        if elm in alpha_list:
+            pt += subs_dict[elm]
+        else:
+            pt += elm
+    
+    wrapped_pt = textwrap.fill(pt, width=80)
+    print(wrapped_pt)
+    print("\n--- Classified Content ---\n")
+    
+    for key, words in sorted(classified_words.items()):
+        
+        decoded_words = []
+        
+        for word in words:
+            pt = ''.join(subs_dict.get(char, char) for char in word)
+            decoded_words.append(pt)
+            
+        classified_words[key] = decoded_words
+        print(f"{key}-Letter Words: {decoded_words}")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+   # Ciphertexts here in the actual coding IDE
+    
+    --- Classified Content ---
+    
+    1-Letter Words: ['*', '*']
+    2-Letter Words: ['**', '**', '**', '**', '**', '**', '**', '**', '**', '*.', '**', '*,', '**', '**', '**', '**', '“*', '**']
+    3-Letter Words: ['***', '***', '***', '***', '**.', '***', '***', '***', '***', '***', '***', '***', '***', '***', '***', '***', '***', '**.', '***', '***', '***', '**.', '“**', '***', '***', '***', '“*.', '**,', '***']
+    4-Letter Words: ['****', '****', '****', '****', '****', '***,', '“***', '****', '***,', '****', '****', '****', '****', '***.', '****', '****', '****', '****', '****', '“***', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '****', '***,', '****', '****', '****']
+    5-Letter Words: ['*****', '****.', '****,', '*****', '*****', '****,', '*****', '****.', '*****', '****?', '*****', '*****', '*****', '*****', '*****', '*****', '*****', '****,', '****—', '“****', '*****', '*****', '****,', '***,”', '“****', '*****', '*****', '*****', '*****', '*****']
+    6-Letter Words: ['******', '*****,', '******', '*****:', '******', '******', '*****.', '******', '******', '******', '******', '******', '*****.', '“***,”', '******', '******', '******', '******', '******', '******', '******', '******', '******', '****,”', '******', '******', '******', '*****;', '******', '******']
+    7-Letter Words: ['*******', '*******', '*******', '******.', '******,', '*******', '*******', '*******', '*******', '*******', '*******', '*******', '******;', '*******', '*******', '*******', '*******', '*******', '******?', '*******', '*******', '******.', '*******', '*******', '*******', '*******', '******.', '*******', '*****.”', '*******', '*******', '*******', '*******', '*******', '*******', '******,', '*******', '******,']
+    8-Letter Words: ['********', '*******,', '********', '********', '********', '********', '*******?', '********', '********', '*******,', '********', '*******,', '********', '********', '*******,', '********', '********', '*******.', '********', '*******,', '“*******', '********', '********']
+    9-Letter Words: ['*********', '*********', '*********', '*********', '*********', '*********', '*********', '*********', '********.', '********,', '*********', '*******?”', '*********', '*********', '*******,”', '*******?”', '*********', '*******?”']
+    10-Letter Words: ['**********', '**********', '**********', '*********,', '**********', '**********', '**********', '**********', '****-*****', '*********:', '**********', '*********.', '*********.', '*********?', '*********;']
+    11-Letter Words: ['**********.', '**********,', '*********.”', '***********', '**********.', '***********', '***********']
+    12-Letter Words: ['************', '************', '***-*******,', '***********,', '***********.']
+    13-Letter Words: ['*************']
+    14-Letter Words: ['**************']
+    15-Letter Words: ['***************']
+    18-Letter Words: ['******-**********.', '“***************!”', '“***************?”']
+    \end{lstlisting}
+    
+    Firstly, we start decryption through the 1-Letter Words: ['z', 't']. Based on the English Language Frequency Statistics Table and common sense, we can deduce that one of these letters likely represents "i" and the other "a".  \\
+        
+    Further analysis of 2-letter words reveals two instances: one ending with "t" and another beginning with "t". Moreover, one of these is followed by an apostrophe. Grammatically, it's unlikely for "a" to be followed by an apostrophe, whereas "I" commonly appears in contractions like "I'm". Additionally, "a" is rarely placed at the end of a word. \\
+     
+    Given these frequency statistics and grammatical observations, we conclude that 't' is more likely to be a substitution for 'i' than 'a'. Therefore, we assume that \textbf{"t" substitutes for "i", and "z" substitutes for "a"}. \\
+
+    Next, we examine 2-Letter words starting with "i" or "a". Common examples include "if", "in", "is", "it", "am", "an", "as", and "at". By observing 2-Letter Words: ['tf','tl', 'tg', 'zf', 'zg', '"t', 'tn'], we notice "tf", "zf", "tg", and "zg" appear as combinations. This suggests that "f" and "g" might substitute for "n", "s", or "t". \\ 
+    
+    Considering letter frequencies, "z" (our assumed "a") is the third most frequent in our ciphertext ('\textit{rfztlbgdaoqcwesukhnpyvmj}'), matching "a" in English letter frequencies ('\textit{etaoinshrdlcumwfgypbvkjxqz}'). "t" (our assumed "i") is fourth, close to "i"s fifth place in English letter frequencies. \\
+    
+    "f" is the second most frequent in our ciphertext, implying it likely represents a common English letter. For example, "e", "t" or "o". Given its position after "a" or "i" and the low probability of combinations like "ae", "ao", "ai", "ie", "io", or "ii", only "t" with "a" or "i" can be matched into the 2-Letter Words: "at" and "it". Therefore, we deduce that \textbf{"f" likely substitutes for "t"} through frequency analysis with common word patterns. \\
+    
+    Further, by analyzing the 4-Letter Words: ['t*at'], which corresponds to ['fdzf'] in the ciphertext, we can infer this word is likely "that". This is based on its common word structure and the high frequency of the "th" digraph. Therefore, we guess that ciphertext "d" = "h". Notably, "d" is the eighth most frequent letter in our ciphertext, matching "h" in English frequency order. Thus, we deduce that \textbf{"d" is the substitution for "h"}. \\
+
+    Besides, considering the English letter frequency "\textit{etaoinshrdlcumwfgypbvkjxqz}" and our ciphertext frequency "\textit{rfztlbgdaoqcwesukhnpyvmj}", we've already identified "t" and "a" as "f" and "z". Following this pattern, we can reasonably guess that \textbf{"r" is the substitution for "e"}. \\
+
+    To continue, we examine the 2-Letter Words: ['t*'] = ['fb'], and considering the most frequent two-letter words starting with "t", we can reasonably guess that \textbf{"b" is the substitution for "o"}. Other letters are less likely to form common two-letter words with "t". \\
+
+    Following this, we analyze the 4-Letter Words: ['thi*'] = ['fdtg']. Referring to the Most Frequent Four-Letter Words list, "this" has a high frequency. Additionally, "s" is more plausible after "thi". Therefore, we hypothesize that "fdtg" represents "this", suggesting that \textbf{"g" is the substitution for "s"}. After applying this decryption, we observe that many words in the ciphertext word list are revealed and form correct English words. This corroborates our guess; through word length patterns, common word structures, and frequency analysis, we finally determine that the substitution of "g" for "s" is correct. \\
+
+    Based on our high-frequency words, we can guess that in the undecrypted 2-Letter words, 2-Letter Words: ['i*', 'i*'] = ['tl', 'tn'], either "l" or "n" substitutes for "f", forming "if". Observing the ciphertext word length classification table, we find that the ciphertext character "l" can be used at the beginning of words, but there are no two-letter words starting with 'f' when the length is 2. This eliminates "l" as a substitution for 'f'. Additionally, we have 2-Letter Words: ['o*'] = ['bn'], and in the Most Frequent Two-Letter Words list, "of" has the highest frequency. Therefore, we deduce that \textbf{"n" is the substitution for ”f“}. \\
+
+    Furthermore, from 4-Letter Words: ['*ith'] = ['utfd'] and the Most Frequent Four-Letter Words list, we find that "with" has a high frequency in four-letter words. In this case, "w" is the most reasonable letter for the ciphertext "*ith". Thus, we guess that \textbf{"u" is the substitution for "w"}. \\
+    
+    We also notice in the classified ciphertext word, 4-Letter Words: ['ha*e'] = ['dzyr']. According to the Most Frequent Four-Letter Words list, we can guess the ciphertext "hae" is the word "have", which means that \textbf{"y" is the substitution for "v"}. \\
+    
+    Moreover, from the classified ciphertext word, we notice 6-Letter Words: ['itse*f'] = ['tfgrwn']. Analyzing the word structure, the ciphertext "tfgrwn" could be determined as "itself". This indicates that \textbf{"w" is the substitution for "l"}. \\
+
+    For the 7-Letter Words: ['hi*self'] = ['dtegrwn'], we can decrypt the ciphertext by the word structure; for the "hi*self", the word "himself" would have the highest probability in English usage. Therefore, we conclude that \textbf{"e" is the substitution of "m"}. \\
+
+    After that, examining the 10-Letter Words: ['*ollisio*s'] = ['cbwwtgtblg'], and observing the partially decrypted word's pattern, we can determine the plaintext is "collisions". This confirms that \textbf{"c" substitutes for "c", and "l" substitutes for "n"}. \\
+    
+    Next, we can focus on the 12-Letter Words: ['conve*sation'] = ['cblyragzftbl'] and 9-Letter Words: ['the*efo*e'] = ['fdrarnbar']. Through analysing the partially decrypted word, we can decide the plaintext for the ciphertext "cblyragzftbl" is "conversation" and "fdrarnbar" is "therefore". Since in these word patterns, the word "conversation" and "therefore" is the most reasonable word. Hence, \textbf{"a" is the substitution of "r"}. \\
+    
+    With the decrypted ciphertexts above, the 18-Letter Words: ['“*nintentionall*!”'] = ['“oltlfrlftblzwws!”'] can be decrypted. By analysing the word pattern, "unintentionally" has been determined as the plaintext for the cipher "“oltlfrlftblzwws". This indicates that \textbf{"o" is the substitution of "u", and "s" is the substitution of "y"}. \\
+    
+    Besides, the 7-Letter Words: ['*erfect'] = ['hranrcf'] could be decrypted. Due to the word structure being clear and predictable, the word "perfect" could be considered as the plaintext of "hranrcf". This demonstrates that \textbf{"h" is the substitution of "p"}. \\
+    
+    Additionally, the 9-Letter Words: ['comman*er'] = ['cbeezlqra'], 10-Letter Words: ['comman*er;'] = ['cbeezlqra;'] and 11-Letter Words: ['*iscussions'] = ['qtgcoggtblg'] are having same word patterns. In this scenario, the words "commander" and "discussions" are the most possible plaintext for the ciphertext "cbeezlqra" and "qtgcoggtblg". Therefore, the \textbf{"q" is substituting "d"}. \\
+    
+    Furthermore, we return to check the 2-Letter Words: ['*y'] = ['ps']. From the partially decrypted word, it can be assumed as the word "my" or "by". However, as the substitution of "m" has already been decrypted and "by" has a higher frequency in the Most Frequent Two-Letter Words List, the "by" will be concluded as the plaintext for the cipher "ps". Thus, the \textbf{"p" is the substitution of "b"}. \\
+
+    For the 8-Letter Words: ['thou*ht,'] = ['fdbokdf'] and 11-Letter Words: ['reco*nised,'] = ['arcbkltgrq'], it is easy to determine the last letter from the partially decrypted word pattern, the word "thought" and "recognised" are the words has higher possibility for the ciphertext "fdbokdf" and "arcbkltgrq". Beyond that, through analysing the ciphertext, we can discover that the last encrypted letter is the same for both ciphertexts, which is the "k". This aligns with the assumption that the plaintexts are the words "thought" and "recognised". In sum, the \textbf{"k" is substituting "g"}. \\
+
+    In addition, the plaintext for the 11-Letter Words: ['remar*able.'] = ['arezavzpwr'] can be defined as the word "remarkable", since this is the most appropriate word by observing the partially decrypted pattern "remar*able". In summary, the \textbf{"v" is representing "k"} in the ciphertext. \\
+
+    After that, the 9-Letter Words: ['e*pressed'] = ['rmharggrq'] and 11-Letter Words: ['e*istence."'] = ['rmtgfrlcr'] have provided more insights for the ciphertext. From observing both partially decrypted words and their ciphertext, we found out that the ciphertext "m" are representing same letter, in this case, the words "expressed" and "existence" are the most appropriate words for the ciphertext "rmharggrq" and "rmtgfrlcr". Hence, \textbf{"m" is representing "x"} in the ciphertext. \\
+    
+    Moreover, 8-Letter Words: ['*uestion'] = ['jorgftbl'] is obvious from the partially decrypted word pattern that the word "question" will have a higher possibility for the ciphertext. Therefore, we can determine the plaintext for the ciphertext "jorgftbl" is "question". This illustrates that \textbf{"j" is the substitution of "q"}. \\
+
+    After the decryption process, we get the plaintext and the key:
+
+    \begin{lstlisting}
+    # The previous part is the same as the provided "decrypt.py"; the modifications start from below.
+    
+    subs_dict["a"] = "r"
+    subs_dict["b"] = "o"
+    subs_dict["c"] = "c"
+    subs_dict["d"] = "h"
+    subs_dict["e"] = "m"
+    subs_dict["f"] = "t"
+    subs_dict["g"] = "s"
+    subs_dict["h"] = "p"
+    subs_dict["i"] = "*"
+    subs_dict["j"] = "q"
+    subs_dict["k"] = "g"
+    subs_dict["l"] = "n"
+    subs_dict["m"] = "x"
+    subs_dict["n"] = "f"
+    subs_dict["o"] = "u"
+    subs_dict["p"] = "b"
+    subs_dict["q"] = "d"
+    subs_dict["r"] = "e"
+    subs_dict["s"] = "y"
+    subs_dict["t"] = "i"
+    subs_dict["u"] = "w"
+    subs_dict["v"] = "k"
+    subs_dict["w"] = "l"
+    subs_dict["x"] = "*"
+    subs_dict["y"] = "v"
+    subs_dict["z"] = "a"
+    
+    ## read text
+    text = ""
+    with open(INPUT_CIPHERTEXT, "r") as f:
+        text = list(f.read().strip().lower())
+    
+    ## substitution text
+    pt = ""
+    for elm in text:
+        if elm in alpha_list:
+            pt += subs_dict[elm]
+        else:
+            pt += elm
+    
+    wrapped_pt = textwrap.fill(pt, width=80)
+    print(wrapped_pt)
+    print("\n--- Classified Content ---\n")
+    
+    for key, words in sorted(classified_words.items()):
+        
+        decoded_words = []
+        
+        for word in words:
+            pt = ''.join(subs_dict.get(char, char) for char in word)
+            decoded_words.append(pt)
+            
+        classified_words[key] = decoded_words
+        print(f"{key}-Letter Words: {decoded_words}")
+    \end{lstlisting}
+
+    Output:
+
+    \begin{lstlisting}
+    it was not a question that the commander put to me. therefore there was no
+    answer to be made. this man expressed himself with perfect ease, without any
+    accent. his sentences were well turned, his words clear, and his fluency of
+    speech remarkable. yet, i did not recognise in him a fellow-countryman. he
+    continued the conversation in these terms: “you have doubtless thought, sir,
+    that i have delayed long in paying you this second visit. the reason is that,
+    your identity recognised, i wished to weigh maturely what part to act towards
+    you. i have hesitated much. most annoying circumstances have brought you into
+    the presence of a man who has broken all the ties of humanity. you have come to
+    trouble my existence.” “unintentionally!” said i. “unintentionally?” replied the
+    stranger, raising his voice a little; “was it unintentionally that the abraham
+    lincoln pursued me all over the seas? was it unintentionally that you took
+    passage in this frigate? was it unintentionally that your cannon balls rebounded
+    off the plating of my vessel? was it unintentionally that mr. ned land struck me
+    with his harpoon?” i detected a restrained irritation in these words. but to
+    these recriminations i had a very natural answer to make and i made it. “sir,”
+    said i, “no doubt you are ignorant of the discussions which have taken place
+    concerning you in america and europe. you do not know that divers accidents,
+    caused by collisions with your submarine machine, have excited public feeling in
+    the two continents. i omit the hypotheses without number by which it was sought
+    to explain the inexplicable phenomenon of which you alone possess the secret.
+    but you must understand that, in pursuing you over the high seas of the pacific,
+    the abraham lincoln believed itself to be chasing some powerful sea-monster, of
+    which it was necessary to rid the ocean at any price.” a half-smile curled the
+    lips of the commander: then, in a calmer tone— “m. aronnax,” he replied, “dare
+    you affirm that your frigate would not as soon have pursued and cannonaded a
+    submarine boat as a monster?” this question embarrassed me, for certainly
+    captain farragut might not have hesitated. he might have thought it his duty to
+    destroy a contrivance of this kind, as he would a gigantic narwhal. “you
+    understand then, sir,” continued the stranger, “that i have the right to treat
+    you as enemies?” i answered nothing, purposely. for what good would it be to
+    discuss such a proposition, when force could destroy the best arguments? “i have
+    hesitated some time,” continued the commander; “nothing obliged me to show you
+    hospitality. if i chose to separate myself from you, i should have no interest
+    in seeing you again; i could place you upon the deck of this vessel which has
+    served you as a refuge, i could sink beneath the waters, and
+    
+    --- Classified Content ---
+    
+    1-Letter Words: ['a', 'i']
+    2-Letter Words: ['it', 'to', 'no', 'be', 'of', 'in', 'he', 'is', 'my', 'i.', 'me', 'i,', 'do', 'by', 'at', 'as', '“i', 'if']
+    3-Letter Words: ['was', 'not', 'the', 'put', 'me.', 'man', 'any', 'his', 'and', 'did', 'him', 'you', 'act', 'who', 'has', 'all', 'off', 'mr.', 'ned', 'but', 'had', 'it.', '“no', 'are', 'two', 'rid', '“m.', 'me,', 'for']
+    4-Letter Words: ['that', 'this', 'with', 'were', 'well', 'yet,', '“you', 'have', 'sir,', 'long', 'your', 'what', 'part', 'you.', 'most', 'into', 'ties', 'come', 'said', '“was', 'over', 'took', 'land', 'very', 'make', 'made', 'know', 'omit', 'must', 'high', 'seas', 'some', 'lips', 'soon', 'boat', 'duty', 'good', 'such', 'when', 'best', 'show', 'from', 'you,', 'upon', 'deck', 'sink']
+    5-Letter Words: ['there', 'made.', 'ease,', 'words', 'these', 'that,', 'weigh', 'much.', 'voice', 'seas?', 'balls', 'doubt', 'which', 'taken', 'place', 'alone', 'ocean', 'then,', 'tone—', '“dare', 'would', 'might', 'kind,', 'sir,”', '“that', 'right', 'treat', 'force', 'could', 'chose']
+    6-Letter Words: ['answer', 'clear,', 'speech', 'terms:', 'paying', 'second', 'visit.', 'reason', 'wished', 'broken', 'cannon', 'struck', 'words.', '“sir,”', 'divers', 'caused', 'public', 'number', 'sought', 'itself', 'curled', 'calmer', 'affirm', 'time,”', 'myself', 'should', 'seeing', 'again;', 'vessel', 'served']
+    7-Letter Words: ['himself', 'perfect', 'without', 'accent.', 'turned,', 'fluency', 'delayed', 'towards', 'brought', 'trouble', 'replied', 'raising', 'little;', 'abraham', 'lincoln', 'pursued', 'passage', 'plating', 'vessel?', 'natural', 'america', 'europe.', 'excited', 'feeling', 'explain', 'possess', 'secret.', 'chasing', 'price.”', 'frigate', 'captain', 'thought', 'destroy', 'discuss', 'obliged', 'refuge,', 'beneath', 'waters,']
+    8-Letter Words: ['question', 'thought,', 'identity', 'maturely', 'annoying', 'presence', 'frigate?', 'detected', 'ignorant', 'machine,', 'pursuing', 'pacific,', 'believed', 'powerful', 'replied,', 'farragut', 'gigantic', 'narwhal.', 'answered', 'nothing,', '“nothing', 'separate', 'interest']
+    9-Letter Words: ['commander', 'therefore', 'expressed', 'sentences', 'recognise', 'continued', 'doubtless', 'hesitated', 'humanity.', 'stranger,', 'rebounded', 'harpoon?”', 'submarine', 'necessary', 'aronnax,”', 'monster?”', 'certainly', 'enemies?”']
+    10-Letter Words: ['restrained', 'irritation', 'concerning', 'accidents,', 'collisions', 'hypotheses', 'phenomenon', 'understand', 'half-smile', 'commander:', 'cannonaded', 'hesitated.', 'purposely.', 'arguments?', 'commander;']
+    11-Letter Words: ['remarkable.', 'recognised,', 'existence.”', 'discussions', 'continents.', 'embarrassed', 'contrivance']
+    12-Letter Words: ['conversation', 'inexplicable', 'sea-monster,', 'proposition,', 'hospitality.']
+    13-Letter Words: ['circumstances']
+    14-Letter Words: ['recriminations']
+    15-Letter Words: ['unintentionally']
+    18-Letter Words: ['fellow-countryman.', '“unintentionally!”', '“unintentionally?”']
+    \end{lstlisting}
+
+    Demonstrating the substitution dictionary, unused substitution instance and letters not appearing in the plaintext:
+
+    \begin{lstlisting}
+    def format_substitution_dict(subs_dict):
+        # Sort items by the original letters (keys)
+        sorted_items = sorted(subs_dict.items())
+        
+        # Format into the desired string, with items separated by spaces
+        formatted_str = ' '.join(f"{k}:{v}" for k, v in sorted_items)
+        
+        return formatted_str
+    
+    def print_substitution_dict(subs_dict):
+        formatted_result = format_substitution_dict(subs_dict)
+        
+        # Split the result into multiple lines, with a maximum of 10 items per line
+        lines = []
+        items = formatted_result.split()
+        for i in range(0, len(items), 10):
+            lines.append('  '.join(items[i:i+10]))
+        
+        print("Substitution Dictionary:")
+        for line in lines:
+            print(line)
+        
+        # Identify letters with '*' as value (unused in the substitution)
+        unused_in_substitution = [k for k, v in subs_dict.items() if v == '*']
+        print("\nUnused substitution instances:", ' '.join(sorted(unused_in_substitution)))
+    
+        # Identify letters that don't appear in the original text
+        all_letters = set('abcdefghijklmnopqrstuvwxyz')
+        used_in_original = set(subs_dict.values()) - {'*'}
+        unused_in_original = all_letters - used_in_original
+        print("Letters not appearing in the plaintext:", ' '.join(sorted(unused_in_original)))
+    
+    # Use the function
+    print_substitution_dict(subs_dict)
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    Substitution Dictionary:
+    a:r  b:o  c:c  d:h  e:m  f:t  g:s  h:p  i:*  j:q
+    k:g  l:n  m:x  n:f  o:u  p:b  q:d  r:e  s:y  t:i
+    u:w  v:k  w:l  x:*  y:v  z:a
+    
+    Unused substitution instances: i x
+    Letters not appearing in the plaintext: j z
+    \end{lstlisting}
+
+    Searching and observing the plaintext with the hint, we discover that the plaintext is from "Jules Verne's Twenty Thousand Leagues Under the Sea - Part One: Chapter 10". \\
+
+    In conclusion, the decryption key is:\\
+    \textbf{"a:r,b:o,c:c,d:h,e:m,f:t,g:s,h:p,i:*,j:q,k:g,l:n,m:x,n:f,o:u,p:b,q:d,r:e,s:y,t:i,u:w,v:k,w:l,x:*,y:v,z:a"} \\
+
+   Due to the fact that \textbf{“z” and “j” do not appear in the original plaintext}, the substitution key for these letters could not be acquired. This indicates that the \textbf{"i" and "x" never appear in the ciphertext}. These letters will be marked with “*” in the final key representation.
+    
 \end{homeworkProblem}
 
 \pagebreak
 
 \begin{homeworkProblem}
-    Suppose we would like to fit a straight line through the origin, i.e.,
-    \(Y_i = \beta_1 x_i + e_i\) with \(i = 1, \ldots, n\), \(\E [e_i] = 0\),
-    and \(\Var [e_i] = \sigma^2_e\) and \(\Cov[e_i, e_j] = 0, \forall i \neq
-    j\).
-    \\
 
-    \part
+    \textbf{Solution For Question 3}\\
 
-    Find the least squares esimator for \(\hat{\beta_1}\) for the slope
-    \(\beta_1\).
-    \\
+    \textbf{(a) Deriving the decryption function for the Affine Cipher scheme} \\ [10pt]
+    Based on the given encryption function in the question:
 
-    \solution
-
-    To find the least squares estimator, we should minimize our Residual Sum
-    of Squares, RSS:
-
+    \[  
+        \begin{split}
+            c = E_{(a,b)}(p) = a(p + b) \bmod 28
+        \end{split}
+    \]
+    
+    Leveraging the property of multiplicative inverses, we can construct the corresponding decryption scheme:
+    
+    \[  
+        \begin{split}
+            p &= (c-a \cdot b) \cdot a^{-1} \bmod{28} \\
+            p &= c \cdot a^{-1} - b \bmod{28}
+        \end{split}
+    \]
+    
+    This scheme is valid because:
+    
     \[
         \begin{split}
-            RSS &= \sum_{i = 1}^{n} {(Y_i - \hat{Y_i})}^2
-            \\
-            &= \sum_{i = 1}^{n} {(Y_i - \hat{\beta_1} x_i)}^2
+            c &= a(p + b) \bmod 28 \\
+            c &= a \cdot p + a \cdot b \bmod 28 \\
+            c - a \cdot b &= a \cdot p \bmod 28 \\
+            (c - a \cdot b) \cdot a^{-1} &= a \cdot p \cdot a^{-1} \bmod 28 \\
+            p &\equiv (c-a \cdot b) \cdot a^{-1} \bmod{28} \\
+            p &= (c-a \cdot b) \cdot a^{-1} \bmod{28} \\
+            p &= c \cdot a^{-1} - b \bmod{28}
+        \end{split}
+    \]
+    
+    Therefore, by computing $\mathbf{p = c \cdot a^{-1} - b \bmod{28}}$, we can recover the original plaintext $p$.\\[15pt]
+    
+    \textbf{(b) Possible non-trivial keys for the scheme } \\ [10pt]
+    There are 335 \textit{non-trivial keys}. \\
+    
+    According to the question, we know that the encryption function are:
+
+    \[  
+        \begin{split}
+            c = E_{(a,b)}(p) = a(p + b) \bmod 28
         \end{split}
     \]
 
-    By taking the partial derivative in respect to \(\hat{\beta_1}\), we get:
+    Further, a key will be defined as a \textit{trivial key} if $c = p$ for all input $p$. Therefore, we could use $p$ to substitute $c$:
 
-    \[
-        \pderiv{
-            \hat{\beta_1}
-        }{RSS}
-        = -2 \sum_{i = 1}^{n} {x_i (Y_i - \hat{\beta_1} x_i)}
-        = 0
-    \]
-
-    This gives us:
-
-    \[
+    \[  
         \begin{split}
-            \sum_{i = 1}^{n} {x_i (Y_i - \hat{\beta_1} x_i)}
-            &= \sum_{i = 1}^{n} {x_i Y_i} - \sum_{i = 1}^{n} \hat{\beta_1} x_i^2
-            \\
-            &= \sum_{i = 1}^{n} {x_i Y_i} - \hat{\beta_1}\sum_{i = 1}^{n} x_i^2
+            p &= a(p + b) \bmod 28 \\
+            p &= a \cdot p + a \cdot b \bmod 28 \\
+            0 &= a \cdot p - p + a \cdot b \bmod 28 \\
+            0 &= p \cdot (a - 1) + a \cdot b \bmod 28 
         \end{split}
     \]
 
-    Solving for \(\hat{\beta_1}\) gives the final estimator for \(\beta_1\):
+    Based on the proof process above, we discover that only $p \cdot (a - 1)$ and $a \cdot b$ both equal 0 could satisfy that $c = p$ for all input $p$. \\
 
-    \[
+    Hence, we could acquire a key pair $(a,b) = (1,0)$ that lead $p \cdot (a - 1) = 0$ and $a \cdot b = 0$. This can be verified through:
+
+    \[  
         \begin{split}
-            \hat{\beta_1}
-            &= \frac{
-                \sum {x_i Y_i}
-            }{
-                \sum x_i^2
-            }
+            p &= a(p + b) \bmod 28 \\
+            p &= 1 \cdot (p + 0) \bmod 28
+        \end{split}
+    \]
+    
+    This demonstrates that this encryption scheme only has one \textit{trivial key} ($a=1, b=0$). \\
+
+    After defining the \textit{trivial key}, we need to find the number of total keys since the \textit{non-trivial key} is calculated by $total key - trivial key$. \\
+    
+    Firstly, we know the decryption function is:
+
+    \[  
+        \begin{split}
+            p &= (c-a \cdot b) \cdot a^{-1} \bmod{28} \\
+            p &= c \cdot a^{-1} - b \bmod{28}
         \end{split}
     \]
 
+     This shows that the multiplicative inverse $a^{-1}$ is needed to conduct decryption. However, in this scenario, only when $GCD(a,28) = 1$, we could acquire the multiplicative inverse $a^{-1}$. From the question, we know that the range of values of $a$ is $\mathbb{Z}_{28}$. In $\mathbb{Z}_{28}$, there are $12$ numbers coprime to $28$ ($a =1,3,5,9,11,13,15,17,19,23,25,27$). In the case of $b$, $b$ is only used for addition and subtraction. Therefore, the $b$ can be any number from 0 to 27. The number of total keys can be calculated as below:
+
+    \[  
+        \begin{split}
+            a \cdot b = 12 \cdot 28 = 336
+        \end{split}
+    \]
+
+    With the number of total keys and \textit{trivial key}, the number of \textit{non-trivial key} can be found:
+
+    \[  
+        \begin{split}
+            336 - 1 = 335
+        \end{split}
+    \]
+
+    \textbf{Thus, there are 335 \textit{non-trivial keys}.} \\[15pt]
+
+    \textbf{(c) Retrieve the key using a helper} \\ [10pt]
+    Firstly, we know that the encryption function are:
+
+    \[  
+        \begin{split}
+            c = E_{(a,b)}(p) = a(p + b) \bmod 28
+        \end{split}
+    \]
+
+    Assume that we are familiar with the encryption algorithm, the $p = 0$ could be substituted into the encryption function:
+
+    \[  
+        \begin{split}
+            c_0 &= E_{(a,b)}(p) = a(0 + b) \bmod 28 \\
+            c_0 &= E_{(a,b)}(p) = a \cdot b \bmod 28
+        \end{split}
+    \]
+
+    In this case, we will have a ciphertext that only depends on the key $(a,b)$. \\
+
+    Further, we could also substitute the $p = 1$ into the encryption function:
+
+    \[  
+        \begin{split}
+            c_1 &= E_{(a,b)}(p) = a(1 + b) \bmod 28 \\
+            c_1 &= E_{(a,b)}(p) = a + a \cdot b \bmod 28
+        \end{split}
+    \]
+
+    Here we will also have a ciphertext that only depends on the key $(a,b)$. \\
+
+    After that, $c_0$ and $c_1$ are known, we can find the value of $a$ and $b$ by solving two encryption functions:
+
+    \[  
+        \begin{split}
+            c_0 &= a \cdot b \bmod 28 \\
+            c_1 &= a + a \cdot b \bmod 28
+        \end{split}
+    \]
+
+    Simplify the $c_0$:
+
+    \[  
+        \begin{split}
+            b = c_0 \cdot a^{-1} \bmod 28
+        \end{split}
+    \]
+
+    Substitute the equation of $b$ to the $c_1$:
+
+    \[  
+        \begin{split}
+            c_1 &= a + a \cdot (c_0 \cdot a^{-1}) \bmod 28 \\
+            c_1 &= a + c_0 \bmod 28
+        \end{split}
+    \]
+
+    We can acquire the equation of $a$:
+
+    \[  
+        \begin{split}
+            a = c_1 - c_0 \bmod 28
+        \end{split}
+    \]
+
+    Due to $c_0$ and $c_1$ are known, the value of $c_1 - c_0$ can be calculated. Thus, the value of $a$ is obtained. \\
+
+    For the value of $b$, we could leverage the Extended Euclidean algorithm to calculate the multiplicative inverse $a^{-1}$ to substitute into the equation of $b$:
+    
+    \[  
+        \begin{split}
+            b = c_0 \cdot a^{-1} \bmod 28
+        \end{split}
+    \]
+
+    The value of $b$ will be obtained since the $c_1$ is known. \\
+    
+    Through the process above, we could leverage the helper to retrieve the key $(a,b)$. \\[15pt]
+    
+\end{homeworkProblem}
+
+\pagebreak
+
+\begin{homeworkProblem}
+
+    \textbf{Solution For Question 4}\\
+
+    \textbf{(a) Recover the encryption keys} \\ [10pt]
+    Based on the given Hill cipher encryption function (\textit{E1}) in the question:
+
+    \[  
+        \begin{split}
+            c_1 &= (k_{1,1} \cdot p_1 + k_{1,2} \cdot p_2 + \cdots + k_{1,m} \cdot p_m) \bmod 37 \\
+            c_2 &= (k_{2,1} \cdot p_1 + k_{2,2} \cdot p_2 + \cdots + k_{2,m} \cdot p_m) \bmod 37 \\
+            &\cdots \\
+            c_m &= (k_{m,1} \cdot p_1 + k_{m,2} \cdot p_2 + \cdots + k_{m,m} \cdot p_m) \bmod 37 \\
+        \end{split}
+    \]
+
+    We discover that the Hill cipher encryption uses the plaintext matrix to multiply the key matrix and then do the modulo calculation. Thus, it could be present as: \\
+
+    \begin{bmatrix} 
+    c_1 \\ c_2 \\ \vdots \\ c_m
+    \end{bmatrix} = 
+    \begin{bmatrix} 
+    p_1 \\ p_2 \\ \vdots \\ p_m
+    \end{bmatrix} * 
+    \begin{bmatrix} 
+    k_{1,1} & k_{1,2} & \cdots & k_{1,m} \\
+    k_{2,1} & k_{2,2} & \cdots & k_{2,m} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    k_{m,1} & k_{m,2} & \cdots & k_{m,m}
+    \end{bmatrix} \bmod 37 \\
+
+    Furthermore, for the given Vernam cipher encryption function (\textit{E2}) in the question:
+
+    \[  
+        \begin{split}
+            c_1 &= p_1 + K_1 \bmod 37 \\
+            c_2 &= p_2 + K_2 \bmod 37 \\
+            &\cdots \\
+            c_m &= p_m + K_m \bmod 37 \\
+        \end{split}
+    \]
+
+    It could also be presented in the matrix format using the matrix addition: \\
+
+    \begin{bmatrix} 
+    c_1 \\ c_2 \\ \vdots \\ c_m
+    \end{bmatrix} = 
+    \begin{bmatrix} 
+    p_1 \\ p_2 \\ \vdots \\ p_m
+    \end{bmatrix} + 
+    \begin{bmatrix} 
+    K_1 \\ K_2 \\ \vdots \\ K_m
+    \end{bmatrix} \bmod 37 \\
+
+    Beyond that, based on the question, the encryption is done by:
+
+    \[  
+        \begin{split}
+            c = E_2(E_1(p))
+        \end{split}
+    \]
+
+    This means that the encryption process is the Hill cipher encryption (\textit{E1}) will be conducted first, then use the acquired ciphertext from \textit{E1} as the plaintext for the Vernam cipher encryption (\textit{E2}) to conduct encryption. Hence, the complete encryption process can be present as: \\
+
+    \begin{bmatrix} 
+    c_1 \\ c_2 \\ \vdots \\ c_m
+    \end{bmatrix} = 
+    \begin{bmatrix} 
+    p_1 \\ p_2 \\ \vdots \\ p_m
+    \end{bmatrix} * 
+    \begin{bmatrix} 
+    k_{1,1} & k_{1,2} & \cdots & k_{1,m} \\
+    k_{2,1} & k_{2,2} & \cdots & k_{2,m} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    k_{m,1} & k_{m,2} & \cdots & k_{m,m}
+    \end{bmatrix} + 
+    \begin{bmatrix} 
+    K_1 \\ K_2 \\ \vdots \\ K_m
+    \end{bmatrix} \bmod 37
+
+    \begin{lstlisting}
+    # Define the alphabet and block size
+    table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_,.?!()@#&+"
+    m = 5
+    
+    # Helper function: Convert character to corresponding index
+    def char_to_index(char):
+        return table.index(char)
+    
+    # Helper function: Convert string to numeric matrix
+    def string_to_numeric(text):
+        indices = list(map(char_to_index, text))
+        return [indices[i:i+m] for i in range(0, len(indices), m)]
+    
+    # Helper function: Print matrix in formatted way with brackets and without commas
+    def print_formatted_matrix(matrix):
+        for row in matrix:
+            print('[' + ' '.join(f"{int(x):2}" for x in row) + ']')
+        print()
+    
+    # Plaintext and ciphertext
+    plaintext = "CBLHCGBGEYIPFYAIAXAILKCTARNTCJ"
+    ciphertext = "VOYHASPLCGBGEOSUSDZZMCQXBFLOTD"
+    
+    # Convert string to numeric matrix for plaintext and ciphertext
+    plain_matrix = string_to_numeric(plaintext)
+    cipher_matrix = string_to_numeric(ciphertext)
+    
+    print("Plaintext matrix:")
+    print(plain_matrix)
+    print("\nFormatted Plaintext matrix:")
+    print_formatted_matrix(plain_matrix)
+    print("-----------------------------------------------------------")
+    
+    print("Ciphertext matrix:")
+    print(cipher_matrix)
+    print("\nFormatted Ciphertext matrix:")
+    print_formatted_matrix(cipher_matrix)
+    print("-----------------------------------------------------------")
+    
+    # Add 1 to each row of the plaintext matrix (for Vernam cipher)
+    for row in plain_matrix:
+        row.append(1)
+    
+    # Convert to matrices over GF(37)
+    mod_plain_matrix = matrix(GF(37), plain_matrix)
+    mod_cipher_matrix = matrix(GF(37), cipher_matrix)
+    
+    # Calculate the key matrix
+    plainMatrix_inverse = mod_plain_matrix.inverse()
+    key_matrix = (plainMatrix_inverse * mod_cipher_matrix).T
+    
+    print("Complete key matrix:")
+    print(key_matrix)
+    print("-----------------------------------------------------------")
+    
+    # Separate Hill cipher and Vernam cipher keys
+    hill_key = [list(row[:m]) for row in key_matrix]
+    vernam_key = [row[m] for row in key_matrix]
+    
+    print("Hill cipher key matrix:")
+    print(hill_key)
+    print("\nFormatted Hill cipher key matrix:")
+    print_formatted_matrix(hill_key)
+    print("-----------------------------------------------------------")
+    
+    print("Vernam cipher key:")
+    print(vernam_key)
+    \end{lstlisting}
+
+    \begin{lstlisting}
+    Plaintext matrix:
+    [[2, 1, 11, 7, 2], [6, 1, 6, 4, 24], [8, 15, 5, 24, 0], [8, 0, 23, 0, 8], [11, 10, 2, 19, 0], [17, 13, 19, 2, 9]]
+    
+    Formatted Plaintext matrix:
+    [ 2  1 11  7  2]
+    [ 6  1  6  4 24]
+    [ 8 15  5 24  0]
+    [ 8  0 23  0  8]
+    [11 10  2 19  0]
+    [17 13 19  2  9]
+    
+    -----------------------------------------------------------
+    Ciphertext matrix:
+    [[21, 14, 24, 7, 0], [18, 15, 11, 2, 6], [1, 6, 4, 14, 18], [20, 18, 3, 25, 25], [12, 2, 16, 23, 1], [5, 11, 14, 19, 3]]
+    
+    Formatted Ciphertext matrix:
+    [21 14 24  7  0]
+    [18 15 11  2  6]
+    [ 1  6  4 14 18]
+    [20 18  3 25 25]
+    [12  2 16 23  1]
+    [ 5 11 14 19  3]
+    
+    -----------------------------------------------------------
+    Determinant of the plaintext matrix:
+    21
+    -----------------------------------------------------------
+    
+    Complete key matrix:
+    [16 23 18 18 22  5]
+    [ 9  7 13 21 16  0]
+    [13  2  9 35 19 21]
+    [19 30  6 13 23 32]
+    [ 0 25  9 10  2 24]
+    -----------------------------------------------------------
+    Hill cipher key matrix:
+    [[16, 23, 18, 18, 22], [9, 7, 13, 21, 16], [13, 2, 9, 35, 19], [19, 30, 6, 13, 23], [0, 25, 9, 10, 2]]
+    
+    Formatted Hill cipher key matrix:
+    [16 23 18 18 22]
+    [ 9  7 13 21 16]
+    [13  2  9 35 19]
+    [19 30  6 13 23]
+    [ 0 25  9 10  2]
+    
+    -----------------------------------------------------------
+    Vernam cipher key:
+    [5, 0, 21, 32, 24]
+    \end{lstlisting}
+    
     \pagebreak
 
     \part
@@ -465,74 +1405,16 @@
         \end{split}
     \]
 
-\end{homeworkProblem}
 
 \pagebreak
 
-\begin{homeworkProblem}
-    Prove a polynomial of degree \(k\), \(a_kn^k + a_{k - 1}n^{k - 1} + \hdots
-    + a_1n^1 + a_0n^0\) is a member of \(\Theta(n^k)\) where \(a_k \hdots a_0\)
-    are nonnegative constants.
+\begin{thebibliography}{9}
 
-    \begin{proof}
-        To prove that \(a_kn^k + a_{k - 1}n^{k - 1} + \hdots + a_1n^1 +
-        a_0n^0\), we must show the following:
+\bibitem{notre_dame_crypto}
+    University of Notre Dame. (n.d.). \textit{Cryptanalysis Hints}. Business Forecasting. Retrieved [21st August, 2024], from \url{https://www3.nd.edu/~busiforc/handouts/cryptography/cryptography%20hints.html}
 
-        \[
-            \exists c_1 \exists c_2 \forall n \geq n_0,\ {c_1 \cdot g(n) \leq
-            f(n) \leq c_2 \cdot g(n)}
-        \]
+\end{thebibliography}
 
-        For the first inequality, it is easy to see that it holds because no
-        matter what the constants are, \(n^k \leq a_kn^k + a_{k - 1}n^{k - 1} +
-        \hdots + a_1n^1 + a_0n^0\) even if \(c_1 = 1\) and \(n_0 = 1\).  This
-        is because \(n^k \leq c_1 \cdot a_kn^k\) for any nonnegative constant,
-        \(c_1\) and \(a_k\).
-        \\
-
-        Taking the second inequality, we prove it in the following way.
-        By summation, \(\sum\limits_{i=0}^k a_i\) will give us a new constant,
-        \(A\). By taking this value of \(A\), we can then do the following:
-
-        \[
-            \begin{split}
-                a_kn^k + a_{k - 1}n^{k - 1} + \hdots + a_1n^1 + a_0n^0 &=
-                \\
-                &\leq (a_k + a_{k - 1} \hdots a_1 + a_0) \cdot n^k
-                \\
-                &= A \cdot n^k
-                \\
-                &\leq c_2 \cdot n^k
-            \end{split}
-        \]
-
-        where \(n_0 = 1\) and \(c_2 = A\). \(c_2\) is just a constant. Thus the
-        proof is complete.
-    \end{proof}
-\end{homeworkProblem}
-
-\pagebreak
-
-%
-% Non sequential homework problems
-%
-
-% Jump to problem 18
-\begin{homeworkProblem}[18]
-    Evaluate \(\sum_{k=1}^{5} k^2\) and \(\sum_{k=1}^{5} (k - 1)^2\).
-\end{homeworkProblem}
-
-% Continue counting to 19
-\begin{homeworkProblem}
-    Find the derivative of \(f(x) = x^4 + 3x^2 - 2\)
-\end{homeworkProblem}
-
-% Go back to where we left off
-\begin{homeworkProblem}[6]
-    Evaluate the integrals
-    \(\int_0^1 (1 - x^2) \dx\)
-    and
-    \(\int_1^{\infty} \frac{1}{x^2} \dx\).
 \end{homeworkProblem}
 
 \end{document}
