@@ -16,6 +16,9 @@
 \usepackage{booktabs}
 \usepackage{caption}
 \usepackage{url}
+\usepackage{bm}
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 
 \usetikzlibrary{automata,positioning}
 
@@ -87,8 +90,7 @@
     \ifnum#1>0
         \setcounter{questionCounter}{#1}
     \fi
-    \section{Question \arabic{questionCounter}}
-    \setcounter{partCounter}{1}
+    \homeworkSection{Question \arabic{questionCounter}}
     \enterProblemHeader{questionCounter}
 }{
     \exitProblemHeader{questionCounter}
@@ -130,7 +132,7 @@
 
 \newcommand{\hmwkTitle}{Assignment 1 ##}
 \newcommand{\hmwkDueDate}{Aug 23, 2024}
-\newcommand{\hmwkClass}{COMP90043 Cryptography and Security}
+\newcommand{\hmwkClass}{COMP90043 \\ Cryptography and Security}
 \newcommand{\hmwkClassInstructor}{Professor Udaya Parampalli}
 \newcommand{\hmwkAuthorName}{\textbf{Wenda Zhang} \and \textbf{1126164}}
 
@@ -175,10 +177,20 @@
 \newcommand{\Var}{\mathrm{Var}}
 \newcommand{\Cov}{\mathrm{Cov}}
 \newcommand{\Bias}{\mathrm{Bias}}
+\renewcommand{\contentsname}{Table of Contents}
+\renewcommand{\thesection}{\arabic{questionCounter}}
+\newcommand{\homeworkSection}[1]{
+    \section{#1}
+    \setcounter{partCounter}{1}
+}
 
 \begin{document}
 
 \maketitle
+
+\newpage
+\tableofcontents
+\newpage
 
 \pagebreak
 
@@ -1107,7 +1119,7 @@
     \textbf{Solution For Question 4}\\
 
     \textbf{(a) Recover the encryption keys} \\ [10pt]
-    Based on the given Hill cipher encryption function (\textit{E1}) in the question:
+    Based on the given Hill cipher encryption function ($E_1$) in the question:
 
     \[  
         \begin{split}
@@ -1118,7 +1130,7 @@
         \end{split}
     \]
 
-    We discover that the Hill cipher encryption uses the plaintext matrix to multiply the key matrix and then do the modulo calculation. Thus, it could be present as: \\
+    We discover that the Hill cipher encryption uses the plaintext matrix to multiply the key matrix $k$ and then calculate the modulo. Thus, it could be present as: \\
 
     \begin{bmatrix} 
     c_1 \\ c_2 \\ \vdots \\ c_m
@@ -1131,9 +1143,9 @@
     k_{2,1} & k_{2,2} & \cdots & k_{2,m} \\
     \vdots & \vdots & \ddots & \vdots \\
     k_{m,1} & k_{m,2} & \cdots & k_{m,m}
-    \end{bmatrix} \bmod 37 \\
+    \end{bmatrix} \bmod \; 37 \\
 
-    Furthermore, for the given Vernam cipher encryption function (\textit{E2}) in the question:
+    Furthermore, for the given Vernam cipher encryption function ($E_2$) in the question:
 
     \[  
         \begin{split}
@@ -1154,7 +1166,7 @@
     \end{bmatrix} + 
     \begin{bmatrix} 
     K_1 \\ K_2 \\ \vdots \\ K_m
-    \end{bmatrix} \bmod 37 \\
+    \end{bmatrix} \bmod \; 37 \\
 
     Beyond that, based on the question, the encryption is done by:
 
@@ -1164,7 +1176,7 @@
         \end{split}
     \]
 
-    This means that the encryption process is the Hill cipher encryption (\textit{E1}) will be conducted first, then use the acquired ciphertext from \textit{E1} as the plaintext for the Vernam cipher encryption (\textit{E2}) to conduct encryption. Hence, the complete encryption process can be present as: \\
+    This means that the encryption process is the Hill cipher encryption ($E_1$) will be conducted first, then use the acquired ciphertext from $E_1$ as the plaintext for the Vernam cipher encryption ($E_2$) to conduct encryption. Hence, the complete encryption process can be present as: \\
 
     \begin{bmatrix} 
     c_1 \\ c_2 \\ \vdots \\ c_m
@@ -1180,7 +1192,137 @@
     \end{bmatrix} + 
     \begin{bmatrix} 
     K_1 \\ K_2 \\ \vdots \\ K_m
-    \end{bmatrix} \bmod 37
+    \end{bmatrix} \bmod \; 37 \\
+
+    Following this analysis, we can observe the combined encryption process: \\
+
+    1. The Hill cipher ($E_1$) involves multiplying the plaintext p by the key matrix $k$. \\
+    2. The Vernam cipher ($E_2$) adds the key $k$ to the result of $E_1$. \\
+    3. Since the output of $E_1$ becomes the input for $E_2$, we can view this entire process as a single operation. \\
+    
+    This leads us to a critical insight: we can represent the entire $E_2$($E_1$) process as an extended Hill cipher. Here's how: \\
+    
+    1. The original Hill cipher part ($E_1$) remains unchanged. \\
+    2. For the Vernam cipher part ($E_2$), we can treat it as an additional column in the Hill cipher key matrix. \\
+    3. To make this work, we must add a constant '1' to our plaintext vector and treat it as an additional row.  \\
+
+    Mathematically, this can be expressed as: \\
+    
+    \[  
+        \begin{split}
+            c_1 &= (k_{1,1} \cdot p_1 + k_{1,2} \cdot p_2 + \cdots + k_{1,m} \cdot p_m + K_1 \cdot 1) \bmod 37 \\
+            c_2 &= (k_{2,1} \cdot p_1 + k_{2,2} \cdot p_2 + \cdots + k_{2,m} \cdot p_m + K_2 \cdot 1) \bmod 37 \\
+            &\cdots \\
+            c_m &= (k_{m,1} \cdot p_1 + k_{m,2} \cdot p_2 + \cdots + k_{m,m} \cdot p_m + K_m \cdot 1) \bmod 37 \\
+        \end{split}
+    \]
+
+    In matrix representation: \\
+
+    \begin{bmatrix} 
+    c_1 \\ c_2 \\ \vdots \\ c_m
+    \end{bmatrix} = 
+    \begin{bmatrix} 
+    p_1 \\ p_2 \\ \vdots \\ p_m \\ 1
+    \end{bmatrix} * 
+    \begin{bmatrix} 
+    k_{1,1} & k_{1,2} & \cdots & k_{1,m} & K_1 \\
+    k_{2,1} & k_{2,2} & \cdots & k_{2,m} & K_2 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    k_{m,1} & k_{m,2} & \cdots & k_{m,m} & K_m
+    \end{bmatrix} \bmod \; 37 \\
+
+    Which is: \\
+    
+    \begin{bmatrix} 
+    c_{1,1} & c_{2,1} & \cdots & c_{m,1} \\
+    c_{1,2} & c_{2,2} & \cdots & c_{m,2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    c_{1,m} & c_{2,m} & \cdots & c_{m,m}
+    \end{bmatrix} = 
+    \begin{bmatrix} 
+    p_{1,1} & p_{2,1} & \cdots & p_{m,1} \\
+    p_{1,2} & p_{2,2} & \cdots & p_{m,2} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    p_{1,m} & p_{2,m} & \cdots & p_{m,m} \\
+    1 & 1 & \cdots & 1
+    \end{bmatrix} * 
+    \begin{bmatrix} 
+    k_{1,1} & k_{1,2} & \cdots & k_{1,m} & K_1 \\
+    k_{2,1} & k_{2,2} & \cdots & k_{2,m} & K_2 \\
+    \vdots & \vdots & \ddots & \vdots & \vdots \\
+    k_{m,1} & k_{m,2} & \cdots & k_{m,m} & K_m
+    \end{bmatrix} \bmod \; 37 \\
+
+    Further, we can acquire the following equations:
+
+    \[
+    \begin{split}
+        c_{1,1} &= [p_{1,1} \; p_{1,2} \; p_{1,3} \cdots p_{1,m} \; 1] \cdot [k_{1,1} \; k_{1,2} \; k_{1,3} \; k_{1,m} \; K_1]  \\
+        c_{1,2} &= [p_{1,1} \; p_{1,2} \; p_{1,3} \cdots p_{1,m} \; 1] \cdot [k_{2,1} \; k_{2,2} \; k_{2,3} \; k_{2,m} \; K_2]  \\
+        &\cdots \\
+        c_{1,m} &= [p_{1,1} \; p_{1,2} \; p_{1,3} \cdots p_{1,m} \; 1] \cdot [k_{m,1} \; k_{m,2} \; k_{m,3} \; k_{m,m} \; K_m] 
+    \end{split}
+    \]
+
+    After performing the matrix multiplication several times, we will obtain a ciphertext matrix $c$. \\
+
+    The combined cipher encryption function can be defined as below; note that $p$, $c$, and $k$ are matrices.
+
+    \[  
+        \begin{split}
+            c &= p \cdot k_{{\text{hill cipher key and vernam cipher key}}} \bmod 37 \\ 
+            k_{{\text{hill cipher key and vernam cipher key}}} &= p^{-1} \cdot c \bmod 37
+        \end{split}
+    \]
+    
+    Next, we will recover the encryption keys by leveraging plaintext and ciphertext. Firstly, we use Python code to replace asterisks in plaintext and ciphertext:
+
+    \begin{lstlisting}
+    def replace_with_student_id(student_id_last_five, plaintext, ciphertext):
+        # Define the alphabet
+        alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_,.?!()@#&+"
+        
+        # Convert the last five digits of the student ID to corresponding letters
+        replacement = ''.join([alphabet[int(digit)] for digit in student_id_last_five])
+        
+        # Replace asterisks in plaintext and ciphertext
+        new_plaintext = plaintext.replace("*****", replacement)
+        new_ciphertext = ciphertext.replace("*****", replacement)
+        
+        return new_plaintext, new_ciphertext
+    
+    # Define the student ID: 1126164
+    student_id_last_five = "26164"
+    original_plaintext = "CBLH*****YIPFYAIAXAILKCTARNTCJ"
+    original_ciphertext = "VOYHASPL*****OSUSDZZMCQXBFLOTD"
+    
+    new_plaintext, new_ciphertext = replace_with_student_id(student_id_last_five, original_plaintext, original_ciphertext)
+    
+    print(f"Original plaintext: {original_plaintext}")
+    print(f"Replaced plaintext: {new_plaintext}")
+    print(f"Original ciphertext: {original_ciphertext}")
+    print(f"Replaced ciphertext: {new_ciphertext}")
+    
+    # Print the replacement letters used
+    replacement = ''.join([chr(ord('A') + int(digit)) for digit in student_id_last_five])
+    print(f"\nReplacement letters used: {replacement}")
+    \end{lstlisting}
+
+    Output:
+
+    \begin{lstlisting}
+    Original plaintext: CBLH*****YIPFYAIAXAILKCTARNTCJ
+    Replaced plaintext: CBLHCGBGEYIPFYAIAXAILKCTARNTCJ
+    Original ciphertext: VOYHASPL*****OSUSDZZMCQXBFLOTD
+    Replaced ciphertext: VOYHASPLCGBGEOSUSDZZMCQXBFLOTD
+
+    Replacement letters used: CGBGE
+    \end{lstlisting}
+
+    After acquiring the full plaintext and ciphertext, we will leverage the SageMathCell to compile Sage Code to decrypt (Link to SageMathCell: https://sagecell.sagemath.org/). \\
+
+    Initially, we transfer the plaintext and ciphertext into the numeric matrix format:
 
     \begin{lstlisting}
     # Define the alphabet and block size
@@ -1206,7 +1348,7 @@
     plaintext = "CBLHCGBGEYIPFYAIAXAILKCTARNTCJ"
     ciphertext = "VOYHASPLCGBGEOSUSDZZMCQXBFLOTD"
     
-    # Convert string to numeric matrix for plaintext and ciphertext
+    # Convert string to the numeric matrix for plaintext and ciphertext
     plain_matrix = string_to_numeric(plaintext)
     cipher_matrix = string_to_numeric(ciphertext)
     
@@ -1221,7 +1363,11 @@
     print("\nFormatted Ciphertext matrix:")
     print_formatted_matrix(cipher_matrix)
     print("-----------------------------------------------------------")
+    \end{lstlisting}
+
+    Then, transform the plaintext and ciphertext matrix to a $6*6$ plaintext matrix (Add 1 to each row for the matrix calculation) and $6*5$ ciphertext matrix. Moreover, the determinant of the plaintext matrix has also been calculated. It aims to check whether the plaintext matrix has the inverse matrix. Due to the later key calculation, the inverse matrix of plaintext will be used.
     
+    \begin{lstlisting}
     # Add 1 to each row of the plaintext matrix (for Vernam cipher)
     for row in plain_matrix:
         row.append(1)
@@ -1230,14 +1376,34 @@
     mod_plain_matrix = matrix(GF(37), plain_matrix)
     mod_cipher_matrix = matrix(GF(37), cipher_matrix)
     
-    # Calculate the key matrix
-    plainMatrix_inverse = mod_plain_matrix.inverse()
-    key_matrix = (plainMatrix_inverse * mod_cipher_matrix).T
+    # Acquiring the determinant of the plaintext matrix. If the determinant < 37, the inverse matrix exists.
+    det_plain_matrix = mod_plain_matrix.det()
+
+    print("Determinant of the plaintext matrix:")
+    print(det_plain_matrix)
+    print("-----------------------------------------------------------")
+    \end{lstlisting}
+    After checking the determinant of the plaintext matrix, the inverse matrix of plaintext exists, the complete key matrix can be obtained through the equation stated above:
     
-    print("Complete key matrix:")
+    \[  
+        \begin{split}
+            k_{{\text{hill cipher key and vernam cipher key}}} &= p^{-1} \cdot c \bmod 37
+        \end{split}
+    \]
+    
+    \begin{lstlisting}
+    # Calculate the key matrix
+    inverse_plainmatrix = mod_plain_matrix.inverse()
+    key_matrix = (inverse_plainmatrix * mod_cipher_matrix).T
+    
+    print("\nComplete key matrix:")
     print(key_matrix)
     print("-----------------------------------------------------------")
+    \end{lstlisting}
+
+    Separating the first $m$ values of each key block to construct the Hill cipher key matrix, and use the last one of each key block to build the Vernam cipher key.
     
+    \begin{lstlisting}
     # Separate Hill cipher and Vernam cipher keys
     hill_key = [list(row[:m]) for row in key_matrix]
     vernam_key = [row[m] for row in key_matrix]
@@ -1252,6 +1418,8 @@
     print(vernam_key)
     \end{lstlisting}
 
+    Here are the entire code outputs:
+    
     \begin{lstlisting}
     Plaintext matrix:
     [[2, 1, 11, 7, 2], [6, 1, 6, 4, 24], [8, 15, 5, 24, 0], [8, 0, 23, 0, 8], [11, 10, 2, 19, 0], [17, 13, 19, 2, 9]]
@@ -1302,108 +1470,440 @@
     Vernam cipher key:
     [5, 0, 21, 32, 24]
     \end{lstlisting}
+
+    Thus, from the code outputs, we obtain the Hill cipher key is:\\
+
+    \begin{bmatrix}
+    16 & 23 & 18 & 18 & 22 \\
+    9 & 7 & 13 & 21 & 16 \\
+    13 & 2 & 9 & 35 & 19 \\
+    19 & 30 & 6 & 13 & 23 \\
+    0 & 25 & 9 & 10 & 2
+    \end{bmatrix} \\ [5pt]
+
+    The Vernam cipher key is: \\
+
+    \begin{bmatrix}
+    5 & 0 & 21 & 32 & 24
+    \end{bmatrix} \\ [5pt]
     
-    \pagebreak
+    Next, Python code will be utilized to decode the matrices:
 
-    \part
+    \begin{lstlisting}
+    def decode_keys(hill_key, vernam_key):
+        # Define the full character set
+        char_set = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_,.?!()@#&+"
+        
+        # Function to convert a number to its corresponding character
+        def num_to_char(num):
+            return char_set[num]
+        
+        # Decode Hill cipher key
+        decoded_hill_key = [[num_to_char(num) for num in row] for row in hill_key]
+        
+        # Decode Vernam cipher key
+        decoded_vernam_key = [num_to_char(num) for num in vernam_key]
+        
+        return decoded_hill_key, decoded_vernam_key
 
-    Calculate the bias and the variance for the estimated slope
-    \(\hat{\beta_1}\).
-    \\
+    # Hill cipher key matrix
+    hill_key = [[16, 23, 18, 18, 22], [9, 7, 13, 21, 16], [13, 2, 9, 35, 19], [19, 30, 6, 13, 23], [0, 25, 9, 10, 2]]
+    
+    # Vernam cipher key
+    vernam_key = [5, 0, 21, 32, 24]
+    
+    # Decode the keys
+    decoded_hill_key, decoded_vernam_key = decode_keys(hill_key, vernam_key)
+    
+    # Print the results
+    print("Decoded Hill cipher key matrix:")
+    for row in decoded_hill_key:
+        print(row)
+    
+    print("\nDecoded Vernam cipher key:")
+    print(decoded_vernam_key)
+    
+    # Print as strings for easier reading
+    print("\nHill cipher key as strings:")
+    for row in decoded_hill_key:
+        print(''.join(row))
+    
+    print("\nVernam cipher key as string:")
+    print(''.join(decoded_vernam_key))
+    \end{lstlisting}
 
-    \solution
+    Output:
 
-    For the bias, we need to calculate the expected value
-    \(\E[\hat{\beta_1}]\):
+    \begin{lstlisting}
+    Decoded Hill cipher key matrix:
+    ['Q', 'X', 'S', 'S', 'W']
+    ['J', 'H', 'N', 'V', 'Q']
+    ['N', 'C', 'J', '&', 'T']
+    ['T', '!', 'G', 'N', 'X']
+    ['A', 'Z', 'J', 'K', 'C']
+    
+    Decoded Vernam cipher key:
+    ['F', 'A', 'V', ')', 'Y']
+    
+    Hill cipher key as strings:
+    QXSSW
+    JHNVQ
+    NCJ&T
+    T!GNX
+    AZJKC
+    
+    Vernam cipher key as string:
+    FAV)Y
+    \end{lstlisting}
 
-    \[
+    From the code outputs, we recover the Hill cipher key: \\ 
+    \verb|QXSSWJHNVQNCJ&TT!GNXAZJKC| \\
+
+    The Vernam cipher key: \\
+    \verb|FAV)Y| \\[15pt]
+
+    \textbf{(b) Recover the plaintext} \\ [10pt]
+     Based on the question, the encryption is done by:
+
+    \[  
         \begin{split}
-            \E[\hat{\beta_1}]
-            &= \E \left[ \frac{
-                \sum {x_i Y_i}
-            }{
-                \sum x_i^2
-            }\right]
-            \\
-            &= \frac{
-                \sum {x_i \E[Y_i]}
-            }{
-                \sum x_i^2
-            }
-            \\
-            &= \frac{
-                \sum {x_i (\beta_1 x_i)}
-            }{
-                \sum x_i^2
-            }
-            \\
-            &= \frac{
-                \sum {x_i^2 \beta_1}
-            }{
-                \sum x_i^2
-            }
-            \\
-            &= \beta_1 \frac{
-                \sum {x_i^2 \beta_1}
-            }{
-                \sum x_i^2
-            }
-            \\
-            &= \beta_1
+            c = E_2(E_1(p))
         \end{split}
     \]
 
-    Thus since our estimator's expected value is \(\beta_1\), we can conclude
-    that the bias of our estimator is 0.
-    \\
+    In contrast, we know that the decryption should start by decrypting the Vernam cipher ($E_2$) and then use the decrypted Vernam plaintext as the ciphertext of the Hill cipher ($E_1$). This process could be represented by:
 
-    For the variance:
-
-    \[
+    \[  
         \begin{split}
-            \Var[\hat{\beta_1}]
-            &= \Var \left[ \frac{
-                \sum {x_i Y_i}
-            }{
-                \sum x_i^2
-            }\right]
-            \\
-            &=
-            \frac{
-                \sum {x_i^2}
-            }{
-                \sum x_i^2 \sum x_i^2
-            } \Var[Y_i]
-            \\
-            &=
-            \frac{
-                \sum {x_i^2}
-            }{
-                \sum x_i^2 \sum x_i^2
-            } \Var[Y_i]
-            \\
-            &=
-            \frac{
-                1
-            }{
-                \sum x_i^2
-            } \Var[Y_i]
-            \\
-            &=
-            \frac{
-                1
-            }{
-                \sum x_i^2
-            } \sigma^2
-            \\
-            &=
-            \frac{
-                \sigma^2
-            }{
-                \sum x_i^2
-            }
+            c = D_1(D_2(c))
         \end{split}
     \]
+
+    Further, we can acquire the Vernam's plaintext formula through the Vernam cipher encryption function:
+
+    \[  
+        \begin{split}
+            c_{{\text{vernam}}} &= p_{{\text{vernam}}} + K_{{\text{vernam cipher encryption key}}} \bmod 37 \\
+            p_{{\text{vernam}}} &= c_{{\text{vernam}}} - K_{{\text{vernam cipher encryption key}}} \bmod 37
+        \end{split}
+    \]
+
+    The plaintext can be calculated through the new ciphertext and the obtained encryption key from the previous question. First, we need to expand the Vernam cipher key to fit the ciphertext, in order to conduct the matrix subtraction. \\
+    
+    With the condition that $m = 5$ and the ciphertext are $50$ characters in total, we can infer that the size of the ciphertext matrix is $10 * 5$. Hence, we will expand the Vernam cipher key to a $10 * 5$ matrix by duplicating the Vernam cipher key. \\
+
+    The Vernam Cipher key we will using is the key from the previous question: \\ 
+    \verb|FAV)Y| \\
+    
+    Below is the implementation in SageMathCell:
+
+    \begin{lstlisting}
+    ## In the implementation of 4(b), the code used above is the same as the code provided in 4(a).
+    # Separate Hill cipher and Vernam cipher keys
+    hill_key = [list(row[:m]) for row in key_matrix]
+    vernam_key = [row[m] for row in key_matrix]
+    
+    print("Hill cipher key matrix:")
+    print(hill_key)
+    print("\nFormatted Hill cipher key matrix:")
+    print_formatted_matrix(hill_key)
+    print("-----------------------------------------------------------")
+    
+    print("Vernam cipher key:")
+    print(vernam_key)
+    
+    
+    # Below are the question 4b
+    cipher_4b = "BQKDN#UBUKW,_U?IK!Z.@LWISKZUW+@N_!W@J&QK+SK!WWSSH."
+    ciphermatrix_4b = string_to_numeric(cipher_4b)
+    mod_cipher_matrix_4b = matrix(GF(37), ciphermatrix_4b)
+    
+    # Calculate the number of blocks
+    num_blocks = len(cipher_4b) // m
+    if len(cipher_4b) % m != 0:
+        num_blocks += 1
+    
+    # Create Vernam key matrix
+    vernam_key_4b = vernam_key * num_blocks
+    vernam_key_matrix = matrix(GF(37), [vernam_key_4b[i:i+m] for i in range(0, len(vernam_key_4b), m)])
+    
+    print("-----------------------------------------------------------")
+    print("Vernam Key Matrix:")
+    print_formatted_matrix(vernam_key_matrix)
+    \end{lstlisting}
+
+    Conduct the matrix subtraction, then using the decrypted Vernam plaintext as the ciphertext of the Hill cipher.
+    
+    \begin{lstlisting}
+    # Remove Vernam encryption
+    vernam_plain_matrix = mod_cipher_matrix_4b - vernam_key_matrix
+    hill_cipher_matrix = vernam_plain_matrix
+    
+    print("-----------------------------------------------------------")
+    print("Hill Cipher Matrix (after removing Vernam):")
+    print_formatted_matrix(hill_cipher_matrix)
+    \end{lstlisting}
+
+    Further, we can acquire the Hill's plaintext formula through the Hill cipher encryption function:
+
+    \[  
+        \begin{split}
+            c_{{\text{hill}}} &= p_{{\text{hill}}} \cdot k_{{\text{hill cipher encryption key}}} \bmod 37 \\
+            p_{{\text{hill}}} &= c_{{\text{hill}}} \cdot k^{-1}_{{\text{hill cipher encryption key}}} \bmod 37
+        \end{split}
+    \]
+
+    Observing the formula shows that the $k^{-1}$ needs to be calculated. Therefore, the determinant of the Hill cipher matrix requires to be examined. \\
+
+    The Hill Cipher key we will be using is the key from the previous question: \\ 
+    \verb|QXSSWJHNVQNCJ&TT!GNXAZJKC|
+
+    \begin{lstlisting}
+    print("-----------------------------------------------------------")
+    # Acquiring the determinant of the hill key matrix. If the determinant < 37, the inverse matrix exists.
+    hill_key_matrix = matrix(GF(37), hill_key)
+    det_hill_key_matrix = hill_key_matrix.det()
+    
+    print("Determinant of the hill key matrix:")
+    print(det_hill_key_matrix)
+    \end{lstlisting}
+
+    Through comparing, we infer that an inverse matrix of plaintext exists, and the decrypted plaintext can be acquired through the equation stated previously:
+    
+    \begin{lstlisting}
+    # Invert Hill key matrix
+    hill_key_inv_matrix = hill_key_matrix.T.inverse()
+    
+    print("-----------------------------------------------------------")
+    print("Inverse of Hill Key Matrix:")
+    print_formatted_matrix(hill_key_inv_matrix)
+    
+    # Decrypt Hill cipher
+    final_plain_matrix = hill_cipher_matrix * hill_key_inv_matrix
+    
+    print("-----------------------------------------------------------")
+    print("Final Plaintext Matrix:")
+    print_formatted_matrix(final_plain_matrix)
+    \end{lstlisting}
+
+    Decoding the final plaintext matrix:
+    
+    \begin{lstlisting}
+    # Convert the final plaintext matrix back to text
+    def index_to_char(index):
+        return table[int(index)]
+    
+    plaintext_4b = ''
+    for row in final_plain_matrix:
+        for cell in row:
+            plaintext_4b += index_to_char(cell)
+    
+    print("-----------------------------------------------------------")
+    print("Decrypted Plaintext:")
+    print(plaintext_4b)
+    \end{lstlisting}
+
+    Below are the entire code outputs:
+
+    \begin{lstlisting}
+    Plaintext matrix:
+    [[2, 1, 11, 7, 2], [6, 1, 6, 4, 24], [8, 15, 5, 24, 0], [8, 0, 23, 0, 8], [11, 10, 2, 19, 0], [17, 13, 19, 2, 9]]
+    
+    Formatted Plaintext matrix:
+    [ 2  1 11  7  2]
+    [ 6  1  6  4 24]
+    [ 8 15  5 24  0]
+    [ 8  0 23  0  8]
+    [11 10  2 19  0]
+    [17 13 19  2  9]
+    
+    -----------------------------------------------------------
+    Ciphertext matrix:
+    [[21, 14, 24, 7, 0], [18, 15, 11, 2, 6], [1, 6, 4, 14, 18], [20, 18, 3, 25, 25], [12, 2, 16, 23, 1], [5, 11, 14, 19, 3]]
+    
+    Formatted Ciphertext matrix:
+    [21 14 24  7  0]
+    [18 15 11  2  6]
+    [ 1  6  4 14 18]
+    [20 18  3 25 25]
+    [12  2 16 23  1]
+    [ 5 11 14 19  3]
+    
+    -----------------------------------------------------------
+    Determinant of the plaintext matrix:
+    21
+    -----------------------------------------------------------
+    
+    Complete key matrix:
+    [16 23 18 18 22  5]
+    [ 9  7 13 21 16  0]
+    [13  2  9 35 19 21]
+    [19 30  6 13 23 32]
+    [ 0 25  9 10  2 24]
+    -----------------------------------------------------------
+    Hill cipher key matrix:
+    [[16, 23, 18, 18, 22], [9, 7, 13, 21, 16], [13, 2, 9, 35, 19], [19, 30, 6, 13, 23], [0, 25, 9, 10, 2]]
+    
+    Formatted Hill cipher key matrix:
+    [16 23 18 18 22]
+    [ 9  7 13 21 16]
+    [13  2  9 35 19]
+    [19 30  6 13 23]
+    [ 0 25  9 10  2]
+    
+    -----------------------------------------------------------
+    Vernam cipher key:
+    [5, 0, 21, 32, 24]
+    -----------------------------------------------------------
+    Vernam Key Matrix:
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    [ 5  0 21 32 24]
+    
+    -----------------------------------------------------------
+    Hill Cipher Matrix (after removing Vernam):
+    [33 16 26  8 26]
+    [29 20 17 25 23]
+    [17 27  5 25  5]
+    [ 3 10  9 30  4]
+    [28 11  1 13 31]
+    [ 5 25 36 27 12]
+    [28 13  5 35 35]
+    [28  9 14 21 23]
+    [31 18 26 35 35]
+    [17 18 34 12  4]
+    
+    -----------------------------------------------------------
+    Determinant of the hill key matrix:
+    31
+    -----------------------------------------------------------
+    Inverse of Hill Key Matrix:
+    [23 23  6 27 13]
+    [23 14 16 32  0]
+    [ 2 34 22 27  7]
+    [21 15 21  4 31]
+    [24  9  3 14  8]
+    
+    -----------------------------------------------------------
+    Final Plaintext Matrix:
+    [10  1 14 22 31]
+    [18 35 19 10 12]
+    [ 2 27  0  0 35]
+    [ 7  2 19  6 28]
+    [29 11 29 30 23]
+    [26 19 12  0 29]
+    [12 23 31 13 25]
+    [22 29 20 15  2]
+    [16 25 36  7 26]
+    [ 0 17 33 22 12]
+    
+    -----------------------------------------------------------
+    Decrypted Plaintext:
+    KBOW(S&TKMC,AA&HCTG.?L?!X_TMA?MX(NZW?UPCQZ+H_AR@WM
+    \end{lstlisting}
+
+    In sum, based on the process above, the decrypted plaintext is: \\ \verb|KBOW(S&TKMC,AA&HCTG.?L?!X_TMA?MX(NZW?UPCQZ+H_AR@WM| \\ [15pt]
+
+    \textbf{(c) Explain no key exists' situation} \\ [10pt]
+    The smallest last five-digital student number that results in no solution for the key is \textbf{00017}.\\
+    
+    Refer to the previous question (a), we have the following combined cipher encryption function:
+    
+    \[  
+        \begin{split}
+            c &= p \cdot k_{{\text{hill cipher key and vernam cipher key}}} \bmod 37 \\ 
+            k_{{\text{hill cipher key and vernam cipher key}}} &= p^{-1} \cdot c \bmod 37
+        \end{split}
+    \]
+    
+    By observing the equation, we found out that we need to calculate the inverse of the plaintext matrix $p$ to obtain the encryption key. However, not all matrices are invertible. We can use the matrix determinant to determine whether a matrix is invertible.\\
+    
+    According to the determinant theorem, a necessary condition for matrix $A$ to be invertible is that $A$ is non-singular. To determine if a matrix is non-singular, we examine its determinant: \\
+    
+    1. If $det(A) = 0$, matrix $A$ is singular (not invertible)\\
+    2. If $det(A) \neq 0$, matrix $A$ is non-singular (invertible)\\
+    
+    Therefore, our plaintext matrix can only be invertible when its determinant is not zero. \\
+
+    In the context of our problem, where the last five digits of the student number are used to replace the asterisks in the plaintext, we need to find which five-digit numbers result in a singular plaintext matrix. We can use the Sage code to check all numbers from 00000 to 99999.\\
+
+    The process will be implemented as follows:\\
+    
+    1. For each number from 00000 to 99999: a. Convert the number to its corresponding characters using our defined table. b. Insert these characters into the plaintext string. c. Convert the plaintext string to a numeric matrix. d. Calculate the determinant of this matrix in $GF(37)$. e. If the determinant is zero, we have found a student number that does not have the solution for the key. \\
+
+    2. The smallest student number is the answer to our question. \\
+
+    Here is the implementation for this question:
+
+    \begin{lstlisting}
+    # Define the alphabet and block size
+    table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_,.?!()@#&+"
+    m = 5
+    
+    # Helper function: Convert character to corresponding index
+    def char_to_index(char):
+        return table.index(char)
+    
+    # Helper function: Convert string to numeric matrix
+    def string_to_numeric(text):
+        indices = list(map(char_to_index, text))
+        return [indices[i:i+m] for i in range(0, len(indices), m)]
+    
+    # Helper function: Convert index to character
+    def index_to_char(index):
+        return table[index]
+    
+    # Helper function: Convert number to 5-digit string
+    def num_to_5digit_str(num):
+        return f"{num:05d}"
+    
+    # Main loop
+    for i in range(100000):  # 0 to 99999
+        # Convert number to 5-character string
+        value = ''.join(index_to_char(int(digit)) for digit in num_to_5digit_str(i))
+        
+        # Create plaintext
+        plaintext = "CBLH" + value + "YIPFYAIAXAILKCTARNTCJ"
+        
+        # Convert to numeric matrix
+        plain_matrix = string_to_numeric(plaintext)
+        
+        # Add 1 to each row of the plaintext matrix (for Vernam cipher)
+        for row in plain_matrix:
+            row.append(1)
+        
+        # Convert to matrix over GF(37)
+        mod_plain_matrix = matrix(GF(37), plain_matrix)
+        
+        # Calculate determinant
+        det_plain_matrix = mod_plain_matrix.det()
+        
+        # Check if determinant is zero
+        if det_plain_matrix == 0:
+            print(f"Found a value with zero determinant: {i}")
+            print(f"The 5-character string is: {value}")
+            break
+    
+    print("Search completed.")
+    \end{lstlisting}
+
+    Output:
+    \begin{lstlisting}
+    Found a value with zero determinant: 17
+    The 5-character string is: AAABH
+    Search completed.
+    \end{lstlisting}
+
+    As the code output shown above demonstrates, the smallest last five-digital student number that results in a singular plaintext matrix and thus does not have a solution for the key is \textbf{00017}. \\
+
+    This means that for a student with this number (or any number that leads to a singular matrix), the encryption process as described would fail, as it's impossible to compute the inverse of the plaintext matrix.
 
 
 \pagebreak
